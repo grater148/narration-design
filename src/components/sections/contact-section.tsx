@@ -1,3 +1,4 @@
+
 // src/components/sections/contact-section.tsx
 "use client";
 
@@ -6,16 +7,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { saveContactMessage, type SaveContactMessageResult } from "@/app/actions/saveContactMessage";
+import { Loader2 } from "lucide-react";
 
 export function ContactSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = () => {
-    const mailtoLink = `mailto:success@narration.design?subject=Contact Form Submission from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AReply to: ${encodeURIComponent(email)}`;
-    window.location.href = mailtoLink;
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const result: SaveContactMessageResult = await saveContactMessage({ name, email, message });
+    setIsLoading(false);
+
+    if (result.success) {
+      toast({
+        title: "Message Sent!",
+        description: result.message,
+        variant: "default",
+      });
+      // Clear form
+      setName("");
+      setEmail("");
+      setMessage("");
+    } else {
+      toast({
+        title: "Error Sending Message",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
   };
+
+  const isFormValid = name.trim() !== "" && email.trim() !== "" && message.trim().length >= 10;
 
   return (
     <section id="contact" className="py-12 md:py-20 bg-background dark:bg-slate-900">
@@ -42,6 +69,7 @@ export function ContactSection() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="text-base"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -53,10 +81,11 @@ export function ContactSection() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="text-base"
+                disabled={isLoading}
               />
             </div>
             <div>
-              <Label htmlFor="message" className="text-lg font-medium text-primary mb-2 block">Message</Label>
+              <Label htmlFor="message" className="text-lg font-medium text-primary mb-2 block">Message (min. 10 characters)</Label>
               <Textarea
                 id="message"
                 placeholder="Your message..."
@@ -64,10 +93,22 @@ export function ContactSection() {
                 onChange={(e) => setMessage(e.target.value)}
                 rows={5}
                 className="text-base"
+                disabled={isLoading}
               />
             </div>
-            <Button onClick={handleSubmit} className="w-full text-lg py-3">
-              Send Message
+            <Button 
+              onClick={handleSubmit} 
+              className="w-full text-lg py-3"
+              disabled={isLoading || !isFormValid}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                "Send Message"
+              )}
             </Button>
           </div>
         </div>
