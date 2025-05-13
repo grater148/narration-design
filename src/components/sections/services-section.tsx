@@ -2,6 +2,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AudioPlayer } from '@/components/ui/audio-player';
 import { User, Users, Speaker } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const services = [
   {
@@ -56,6 +58,13 @@ export function ServicesSection() {
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg transform transition-transform hover:scale-105">
+            <Link href="#cost-calculator">
+              Use Narration Cost Calculator
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
