@@ -210,7 +210,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   className="mt-1 text-base"
                 />
                  <p className="mt-1 text-xs text-muted-foreground">
-                  Your email is used to display the estimate and for potential follow-up. We respect your privacy.
+                  Enter your email to see the estimate! We respect your privacy and DO NOT share your email.
                 </p>
               </div>
             </div>
