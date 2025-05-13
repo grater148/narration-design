@@ -79,9 +79,9 @@
   html {
     scroll-behavior: smooth;
   }
-  * {
+  /* * {
     @apply border-border;
-  }
+  } */
   body {
     @apply bg-background text-foreground;
     /* Redundant font-family removed as Geist Sans is applied via layout.tsx and tailwind.config.ts */
