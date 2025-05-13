@@ -21,7 +21,7 @@ export function HybridApproachSection() {
           <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="items-center text-center">
               <Wand2 className="h-8 w-8 text-primary mb-2" />
-              <CardTitle className="text-xl text-primary">AI-Only Narration</CardTitle>
+              <CardTitle className="text-xl text-primary">Before (AI-only)</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-center text-muted-foreground mb-4">
@@ -29,7 +29,7 @@ export function HybridApproachSection() {
               </p>
               <AudioPlayer 
                 audioSrc="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Placeholder
-                trackTitle="AI-Only Sample"
+                trackTitle="Before (AI-only) Sample"
               />
             </CardContent>
           </Card>
@@ -37,7 +37,7 @@ export function HybridApproachSection() {
           <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="items-center text-center">
               <Headphones className="h-8 w-8 text-accent mb-2" /> {/* Using accent color to differentiate from Human Touch section icon */}
-              <CardTitle className="text-xl text-primary">After the Human Touch</CardTitle>
+              <CardTitle className="text-xl text-primary">After Our Human Touch</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-center text-muted-foreground mb-4">
@@ -45,7 +45,7 @@ export function HybridApproachSection() {
               </p>
               <AudioPlayer 
                 audioSrc="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" // Placeholder
-                trackTitle="Human-Enhanced Sample"
+                trackTitle="After Our Human Touch Sample"
               />
             </CardContent>
           </Card>
@@ -88,3 +88,4 @@ export function HybridApproachSection() {
     </section>
   );
 }
+
