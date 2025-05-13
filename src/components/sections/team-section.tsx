@@ -6,7 +6,7 @@ export function TeamSection() {
     {
       name: 'Josh Slone',
       title: 'Founder & Narration Director',
-      imageUrl: 'https://picsum.photos/seed/joshslone/200/200',
+      imageUrl: '/images/profiles/josh-slone.jpg', // Updated to local image
       bio: "Josh is the visionary founder of Narration.Design, combining his passion for storytelling with expertise in audio production to direct captivating narrations.",
       fallback: 'JS',
       aiHint: 'male portrait',
@@ -14,7 +14,7 @@ export function TeamSection() {
     {
       name: 'Ella Hartwood',
       title: 'Voice Artist and Marketing Lead',
-      imageUrl: 'https://picsum.photos/seed/ellahartwood/200/200',
+      imageUrl: '/images/profiles/ella-hartwood.jpg', // Updated to local image
       bio: "Ella's exceptional vocal talent and keen ear for quality make her an invaluable voice artist and marketing lead, ensuring every audiobook shines.",
       fallback: 'EH',
       aiHint: 'female portrait',
