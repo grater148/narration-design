@@ -10,6 +10,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Users, Speaker } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { saveEmail } from '@/app/actions/saveEmail';
+
 
 const WORDS_PER_HOUR = 9000;
 
@@ -55,6 +58,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const [showCostDisplay, setShowCostDisplay] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const wc = parseInt(wordCount);
@@ -80,7 +84,8 @@ export const NarrationCostCalculatorSection: NextPage = () => {
     } else {
       setShowAdditionalFields(false);
       setGenre('');
-      setEmail('');
+      // Do not clear email here as it might have been entered before service/wordcount was cleared
+      // setEmail(''); 
       setShowCostDisplay(false);
     }
   }, [wordCount, selectedService]);
@@ -97,9 +102,36 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   const handleServiceChange = (value: string) => {
     setSelectedService(value);
   };
+
+  const handleEmailBlur = async () => {
+    const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
+    if (isEmailValid) {
+      try {
+        const result = await saveEmail(email);
+        if (result.success) {
+          if (result.message === "Email saved successfully.") {
+            // console.log("Email saved toast trigger");
+            // toast({ title: "Email Logged", description: "Your email has been noted for our records.", variant: "default" });
+          }
+          // console.log("saveEmail result:", result.message);
+        } else {
+          // Avoid toasting for "Invalid email format" as client-side checks should handle this more immediately
+          // Also avoid toasting for "Email already captured" to reduce noise
+          if (result.message !== "Invalid email format." && result.message !== "Email already captured.") {
+            // console.log("Email save failed toast trigger");
+            // toast({ title: "Save Error", description: result.message, variant: "destructive" });
+          }
+          // console.warn("saveEmail failed:", result.message);
+        }
+      } catch (error) {
+        console.error("Error calling saveEmail action from client:", error);
+        // toast({ title: "System Error", description: "Could not process email. Please try again.", variant: "destructive" });
+      }
+    }
+  };
   
   return (
-    <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5 scroll-mt-20"> {/* Added scroll-mt-20 */}
+    <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5 scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="max-w-3xl mx-auto shadow-xl bg-card">
           <CardHeader className="text-center px-6 pt-8 sm:px-8 sm:pt-10">
@@ -112,7 +144,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
           </CardHeader>
           <CardContent className="p-6 sm:p-8 space-y-8">
             <div>
-              <Label htmlFor="wordCount" className="text-lg font-medium text-primary mb-2 block"> {/* Increased mb */}
+              <Label htmlFor="wordCount" className="text-lg font-medium text-primary mb-2 block">
                 1. Your manuscript&apos;s word count:
               </Label>
               <Input
@@ -132,7 +164,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
             </div>
 
             <div>
-              <Label className="text-lg font-medium text-primary mb-2 block"> {/* Increased mb */}
+              <Label className="text-lg font-medium text-primary mb-2 block">
                 2. Select service level:
               </Label>
               <RadioGroup
@@ -168,7 +200,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
             {showAdditionalFields && (
               <div className="space-y-8 pt-6 border-t border-border/50">
                 <div>
-                  <Label htmlFor="genre" className="text-lg font-medium text-primary mb-2 block"> {/* Increased mb */}
+                  <Label htmlFor="genre" className="text-lg font-medium text-primary mb-2 block">
                     3. Select Genre:
                   </Label>
                   <Select value={genre} onValueChange={setGenre}>
@@ -193,7 +225,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="text-lg font-medium text-primary mb-2 block"> {/* Increased mb */}
+                  <Label htmlFor="email" className="text-lg font-medium text-primary mb-2 block">
                     4. Your Email Address:
                   </Label>
                   <Input
@@ -201,6 +233,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={handleEmailBlur} // Added onBlur handler
                     placeholder="you@example.com"
                     className="text-base"
                   />
