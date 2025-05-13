@@ -5,7 +5,6 @@ import { AudioLines, Menu, X } from 'lucide-react'; // Import Menu and X icons
 import { Button } from '@/components/ui/button';
 import React from 'react'; // Import React for React.Fragment
 import { useState, useEffect } from 'react'; // Import useState and useEffect hooks
-import { useIsMobile } from '@/hooks/use-mobile'; // Import useIsMobile hook
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -15,7 +14,6 @@ const navLinks = [
 
 export function AppHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu visibility
-  // const isMobile = useIsMobile(); // Hook to detect mobile screen size - We'll use a new breakpoint logic
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -52,7 +50,7 @@ export function AppHeader() {
           {/* Hamburger Menu Button for Mobile/Tablet */}
           {showMobileMenu && (
             <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />} {/* Increased icon size */}
+              {isMenuOpen ? <X className="h-14 w-14" /> : <Menu className="h-14 w-14" />} {/* Increased icon size */}
             </Button>
           )}
 
