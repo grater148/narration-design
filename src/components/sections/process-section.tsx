@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const processSteps = [
   {
@@ -171,6 +172,13 @@ export function ProcessSection() {
               {/* Vertical connector removed for mobile view */}
             </React.Fragment>
           ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg transform transition-transform hover:scale-105">
+            <Link href="#cost-calculator">
+              Use Narration Cost Calculator
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
