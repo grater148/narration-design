@@ -56,8 +56,20 @@ export function ContactSection() {
               Have a question, a project idea, or just want to say hello? We'd love to hear from you.
             </p>
             <p className="text-lg text-muted-foreground">
-              Fill out the form, and we'll get back to you as soon as possible.
+              Fill out the form, and we'll get back to you as soon as possible. Or, book a consultation below.
             </p>
+            <a 
+              href="https://narration-design.agiled.app/event/4b29fa4efe4fb7bc667c7b301b74d52d" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <Button 
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white text-lg py-3 px-6 mt-4"
+              >
+                Book a Narration Consult
+              </Button>
+            </a>
           </div>
           <div className="space-y-6 p-6 md:p-8 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-lg">
             <div>
@@ -116,3 +128,5 @@ export function ContactSection() {
     </section>
   );
 }
+
+// Removed the Agiled embed script and related useEffect/global type definitions
