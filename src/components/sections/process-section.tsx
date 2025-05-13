@@ -66,7 +66,7 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
                           h-10 w-10
                           sm:h-12 sm:w-12
                           md:h-14 md:w-14">
-            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 fill-current" />
           </div>
         ) : (
           stepNumber && (
@@ -86,10 +86,10 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4">
-        <div className="flex-grow overflow-y-auto scrollbar-thin mb-5">
+        <div className="overflow-y-auto scrollbar-thin"> {/* Removed flex-grow and mb-5 */}
           <p>{step.description}</p>
         </div>
-        <div className="shrink-0">
+        <div className="flex-grow flex items-center justify-center mt-3"> {/* New wrapper for button centering */}
           <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
             Find out more
           </Button>
