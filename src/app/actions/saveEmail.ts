@@ -1,7 +1,8 @@
+
 'use server';
 
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { db, initializationError } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp, FirestoreError } from 'firebase/firestore';
 import { z } from 'zod';
 
 const LeadSchema = z.object({
@@ -16,6 +17,19 @@ interface SaveLeadResult {
 }
 
 export async function saveLead(leadData: { email: string; wordCount: number; genre: string }): Promise<SaveLeadResult> {
+  if (initializationError) {
+    console.error("Firebase not initialized, cannot save lead:", initializationError);
+    // Provide the detailed initialization error to the client for debugging
+    return { success: false, message: initializationError };
+  }
+
+  if (!db) {
+    // This case should be covered by initializationError, but as a fallback:
+    const dbUnavailableMsg = "Database service is not available. Firebase might not be initialized correctly. Please check server logs and Firebase configuration.";
+    console.error(dbUnavailableMsg);
+    return { success: false, message: "An error occurred while saving the estimate data. The database service is unavailable." };
+  }
+
   try {
     const validatedLead = LeadSchema.safeParse(leadData);
     if (!validatedLead.success) {
@@ -30,18 +44,10 @@ export async function saveLead(leadData: { email: string; wordCount: number; gen
     const { email, wordCount, genre } = validatedLead.data;
 
     const leadsRef = collection(db, 'costEstimatorLeads');
-    // Optional: Check if a very similar lead (e.g., same email, word count, and genre) was submitted recently
-    // This might be overkill if we're just trying to capture all estimate requests.
-    // For now, we'll check if the email itself exists, similar to the previous logic.
-    const q = query(leadsRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    // If we want to allow multiple estimates from the same email but with different parameters,
-    // we might not need to check if the email exists. Or, if we do, the logic for "already captured"
-    // would need to be more nuanced (e.g., update if parameters are different).
-    // For simplicity, if an email exists, we will still save the new estimate data as a new document.
-    // This allows tracking of all estimate interactions.
-
+    
+    // The check for existing email was commented out, retaining that behavior.
+    // const q = query(leadsRef, where('email', '==', email));
+    // const querySnapshot = await getDocs(q);
     // if (!querySnapshot.empty) {
     //   return { success: true, message: "Email already captured. New estimate not saved if identical." };
     // }
@@ -50,14 +56,21 @@ export async function saveLead(leadData: { email: string; wordCount: number; gen
       email,
       wordCount,
       genre,
-      createdAt: serverTimestamp() as Timestamp, // Firestore server timestamp
+      createdAt: serverTimestamp() as Timestamp,
       source: 'NarrationCostCalculator',
     });
 
-    // console.log("Lead data saved to Firestore:", validatedLead.data);
     return { success: true, message: "Estimate data saved successfully." };
   } catch (error) {
     console.error("Error saving lead data to Firestore:", error);
-    return { success: false, message: "An error occurred while saving the estimate data. Please try again later." };
+    let userMessage = "An error occurred while saving the estimate data. Please try again later.";
+    if (error instanceof FirestoreError) { // Check if it's a FirestoreError
+        userMessage = `Failed to save data due to a Firebase issue (Code: ${error.code}). Please ensure Firestore is set up correctly with appropriate security rules, or try again. If the problem persists, contact support.`;
+    } else if (error instanceof Error) {
+        // For other types of errors, you might not want to expose error.message directly
+        // userMessage = `An unexpected error occurred: ${error.message}`; // Potentially too verbose
+    }
+    return { success: false, message: userMessage };
   }
 }
+
