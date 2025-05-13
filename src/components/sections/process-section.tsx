@@ -67,7 +67,7 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
                           h-10 w-10
                           sm:h-12 sm:w-12
                           md:h-14 md:w-14">
-            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 fill-accent-foreground text-accent" />
+            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-accent-foreground" />
           </div>
         ) : (
           stepNumber && (
@@ -81,17 +81,17 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         )}
       </div>
       <CardHeader className="items-center text-center pt-10 sm:pt-12 md:pt-14 pb-1 sm:pb-1.5 md:pb-2 flex-shrink-0">
-        {React.cloneElement(step.icon, { className: "h-8 w-8 md:h-10 md:w-10 text-primary mb-1.5 md:mb-2" })} {/* Adjusted icon size for consistency */}
-        <CardTitle className="text-base lg:text-lg text-primary leading-tight px-1"> {/* Applied text-base as base size */}
+        {React.cloneElement(step.icon, { className: "h-8 w-8 md:h-10 md:w-10 text-primary mb-1.5 md:mb-2" })}
+        <CardTitle className="text-base lg:text-lg text-primary leading-tight px-1">
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-sm text-foreground/75 flex flex-col flex-1 px-2 md:px-3 pt-0 pb-3 md:pb-4 leading-tight min-h-0"> {/* Applied text-sm as base size */}
+      <CardContent className="text-center text-sm text-foreground/75 flex flex-col flex-1 px-2 md:px-3 pt-0 pb-3 md:pb-4 leading-tight min-h-0">
         <div className="flex-1 overflow-y-auto min-h-0"> 
           <p>{step.description}</p>
         </div>
-        <div className="flex-shrink-0 pt-3 flex items-center justify-center"> {/* Adjusted padding */}
-          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-sm leading-snug py-1.5 px-4"> {/* Applied text-sm as base size */}
+        <div className="flex-shrink-0 mt-auto pt-3 flex items-center justify-center"> {/* Button is vertically centered in remaining space */}
+          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-sm leading-snug py-1.5 px-4">
             Find out more
           </Button>
         </div>
