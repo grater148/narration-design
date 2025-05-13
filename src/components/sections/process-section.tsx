@@ -12,6 +12,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const processSteps = [
   {
@@ -60,7 +61,12 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
     <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative overflow-hidden">
       <div className="absolute top-0 left-0 p-2 z-10">
         {isOptional ? (
-          <Lightbulb className="text-accent h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14" />
+          <div className="flex items-center justify-center bg-accent text-accent-foreground rounded-full font-bold
+                          h-10 w-10
+                          sm:h-12 sm:w-12
+                          md:h-14 md:w-14">
+            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+          </div>
         ) : (
           stepNumber && (
             <div className="flex items-center justify-center bg-accent text-accent-foreground rounded-full font-bold
@@ -78,8 +84,15 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 pb-2 sm:pb-3 md:pb-4 flex-grow overflow-y-auto px-1.5 sm:px-2 md:px-3 scrollbar-thin">
-        <p>{step.description}</p>
+      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4">
+        <div className="flex-grow overflow-y-auto scrollbar-thin mb-2 sm:mb-3">
+          <p>{step.description}</p>
+        </div>
+        <div className="shrink-0">
+          <Button size="sm" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
+            Find out more
+          </Button>
+        </div>
       </CardContent>
     </Card>
   </div>
@@ -162,4 +175,3 @@ export function ProcessSection() {
     </section>
   );
 }
-
