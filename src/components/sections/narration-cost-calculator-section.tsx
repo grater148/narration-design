@@ -99,12 +99,12 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   };
   
   return (
-    <section id="cost-calculator" className="py-16 sm:py-24 bg-secondary/5">
+    <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="max-w-3xl mx-auto shadow-xl bg-card">
           <CardHeader className="text-center px-6 pt-8 sm:px-8 sm:pt-10">
             <CardTitle className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-              Narration Cost Calculator
+              Narration Cost Estimation Tool
             </CardTitle>
             <CardDescription className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
               Estimate the cost of your audiobook production. Results are shown after providing word count, service type, genre and email.

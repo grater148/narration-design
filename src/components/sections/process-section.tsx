@@ -67,7 +67,7 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
                           h-10 w-10
                           sm:h-12 sm:w-12
                           md:h-14 md:w-14">
-            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 fill-current" />
+            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 fill-accent-foreground text-accent" />
           </div>
         ) : (
           stepNumber && (
@@ -87,10 +87,10 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4">
-        <div className="overflow-y-auto scrollbar-thin"> {/* Removed flex-grow and mb-5 */}
+        <div className="overflow-y-auto scrollbar-thin"> 
           <p>{step.description}</p>
         </div>
-        <div className="flex-grow flex items-center justify-center mt-3"> {/* New wrapper for button centering */}
+        <div className="flex-grow flex items-center justify-center mt-3"> 
           <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
             Find out more
           </Button>
@@ -106,7 +106,7 @@ export function ProcessSection() {
   const secondRowSteps = processSteps.slice(3);
 
   return (
-    <section id="process" className="py-16 sm:py-24 bg-secondary/10">
+    <section id="process" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/10"> {/* Reduced top padding */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
@@ -175,8 +175,8 @@ export function ProcessSection() {
         </div>
         <div className="mt-12 text-center">
           <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg transform transition-transform hover:scale-105">
-            <Link href="#cost-calculator">
-              Use Narration Cost Calculator
+            <Link href="#cost-estimation-tool">
+              Use Narration Cost Estimation Tool
             </Link>
           </Button>
         </div>
@@ -184,4 +184,3 @@ export function ProcessSection() {
     </section>
   );
 }
-
