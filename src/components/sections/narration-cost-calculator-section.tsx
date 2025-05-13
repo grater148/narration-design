@@ -156,9 +156,12 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                       <span className={`font-semibold text-center text-sm ${selectedService === service.id ? 'text-primary' : 'text-card-foreground'}`}>
                         {service.label}
                       </span>
+                      {/* Cost per hour removed as per request */}
+                      {/* 
                       <span className="text-xs text-muted-foreground mt-1">
                         ${service.price}/audio hour
                       </span>
+                      */}
                     </Label>
                   </React.Fragment>
                 );
@@ -240,3 +243,4 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 };
 
 export default NarrationCostCalculatorSection;
+
