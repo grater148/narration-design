@@ -59,8 +59,8 @@ const DashedLineHorizontal = () => (
 );
 
 const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof processSteps[0]; stepNumber?: number; isOptional?: boolean }) => (
-  <div className="aspect-square w-full h-full">
-    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative overflow-hidden">
+  <div className="w-full h-auto md:aspect-square"> {/* Changed: Allow auto height on mobile, square on desktop */}
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative"> {/* Ensure h-full takes height from parent */}
       <div className="absolute top-0 left-0 p-2 z-10">
         {isOptional ? (
           <div className="flex items-center justify-center bg-accent text-accent-foreground rounded-full font-bold
@@ -86,12 +86,12 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight">
-        <div className="overflow-y-auto scrollbar-thin"> 
+      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-1 px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight min-h-0"> {/* Changed: flex-grow to flex-1, added min-h-0 */}
+        <div className="flex-1 overflow-y-auto min-h-0"> {/* Changed: Added flex-1 and min-h-0, removed scrollbar-thin */}
           <p>{step.description}</p>
         </div>
-        <div className="flex-grow flex items-center justify-center mt-auto pt-3"> {/* Adjusted pt-3 for spacing, mt-auto pushes to bottom of flex-grow */}
-          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
+        <div className="flex-shrink-0 pt-2 sm:pt-3 flex items-center justify-center"> {/* Changed: No longer flex-grow, ensures button is at bottom */}
+          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5 px-3 sm:px-4"> {/* Added explicit padding */}
             Find out more
           </Button>
         </div>
