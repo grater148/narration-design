@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -59,7 +58,7 @@ const DashedLineHorizontal = () => (
 );
 
 const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof processSteps[0]; stepNumber?: number; isOptional?: boolean }) => (
-  <div className="w-full h-auto md:aspect-square"> {/* Changed: Allow auto height on mobile, square on desktop */}
+  <div className="w-full h-auto md:h-full"> {/* Changed: md:aspect-square to md:h-full. h-auto for mobile, h-full for md+ to respect items-stretch */}
     <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative"> {/* Ensure h-full takes height from parent */}
       <div className="absolute top-0 left-0 p-2 z-10">
         {isOptional ? (
@@ -86,12 +85,12 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-1 px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight min-h-0"> {/* Changed: flex-grow to flex-1, added min-h-0 */}
-        <div className="flex-1 overflow-y-auto min-h-0"> {/* Changed: Added flex-1 and min-h-0, removed scrollbar-thin */}
+      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-1 px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight min-h-0">
+        <div className="flex-1 overflow-y-auto min-h-0"> 
           <p>{step.description}</p>
         </div>
-        <div className="flex-shrink-0 pt-2 sm:pt-3 flex items-center justify-center"> {/* Changed: No longer flex-grow, ensures button is at bottom */}
-          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5 px-3 sm:px-4"> {/* Added explicit padding */}
+        <div className="flex-shrink-0 pt-2 sm:pt-3 flex items-center justify-center">
+          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5 px-3 sm:px-4">
             Find out more
           </Button>
         </div>
@@ -106,7 +105,7 @@ export function ProcessSection() {
   const secondRowSteps = processSteps.slice(3);
 
   return (
-    <section id="process" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/10 scroll-mt-20"> {/* Reduced top padding, Added scroll-mt-20 */}
+    <section id="process" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/10 scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
@@ -118,12 +117,12 @@ export function ProcessSection() {
         </div>
 
         {/* Desktop View - 3x2 Grid */}
-        <div className="hidden md:flex flex-col items-center space-y-8 lg:space-y-10"> {/* Increased space-y slightly */}
+        <div className="hidden md:flex flex-col items-center space-y-8 lg:space-y-10">
           {/* First Row */}
           <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
             {firstRowSteps.map((step, index) => (
               <React.Fragment key={step.title + "-desktop-row1"}>
-                <div className="flex-1 min-w-0"> {/* Removed max-width for responsiveness */}
+                <div className="flex-1 min-w-0">
                   <ProcessStepCard step={step} stepNumber={index + 1} />
                 </div>
                 {index < firstRowSteps.length - 1 && (
@@ -140,7 +139,7 @@ export function ProcessSection() {
             <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
               {secondRowSteps.map((step, index) => (
                 <React.Fragment key={step.title + "-desktop-row2"}>
-                  <div className="flex-1 min-w-0">  {/* Removed max-width for responsiveness */}
+                  <div className="flex-1 min-w-0">
                      <ProcessStepCard
                         step={step}
                         stepNumber={!step.isOptional ? (index + 1 + firstRowSteps.length) : undefined}
@@ -154,11 +153,6 @@ export function ProcessSection() {
                   )}
                 </React.Fragment>
               ))}
-               {/* Ensure the row takes up appropriate space if it has fewer than 3 items by adding invisible placeholders or adjusting flex properties if needed. */}
-               {/* For a 2-item row with a line in between, it's 2 cards + 1 line. Total 3 effective 'slots'. Current map handles this fine. */}
-               {/* If we need to ensure it aligns with the 3-column structure above, even with 2 items, we might need spacers. */}
-               {/* The current logic creates 2 cards and 1 line if secondRowSteps.length is 2. It would be: Card - Line - Card. This is fine. */}
-               {/* If secondRowSteps.length is 1, it's just one card. This is also fine. */}
             </div>
           )}
         </div>
@@ -167,14 +161,13 @@ export function ProcessSection() {
         <div className="md:hidden flex flex-col items-center">
           {processSteps.map((step, index) => (
             <React.Fragment key={step.title + "-mobile"}>
-              <div className="w-full max-w-xs sm:max-w-sm mb-6"> {/* Increased mb slightly for mobile */}
+              <div className="w-full max-w-xs sm:max-w-sm mb-6">
                 <ProcessStepCard
                   step={step}
                   stepNumber={!step.isOptional ? (index + 1) : undefined}
                   isOptional={step.isOptional}
                 />
               </div>
-              {/* Vertical connector removed for mobile view */}
             </React.Fragment>
           ))}
         </div>
@@ -189,4 +182,3 @@ export function ProcessSection() {
     </section>
   );
 }
-
