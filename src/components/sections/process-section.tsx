@@ -9,7 +9,7 @@ import {
   ShieldCheck,
   Rocket,
   UploadCloud,
-  Lightbulb, // Added for optional step
+  Lightbulb,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -41,7 +41,7 @@ const processSteps = [
   },
   {
     title: "Publishing Assistance (Optional)",
-    icon: <UploadCloud className="h-10 w-10 text-primary" />, // Main icon
+    icon: <UploadCloud className="h-10 w-10 text-primary" />,
     description: "Optionally, get expert help to navigate submission for platforms like Findaway Voices.",
     isOptional: true,
   },
@@ -50,15 +50,7 @@ const processSteps = [
 const DashedLineHorizontal = () => (
   <div className="flex-grow flex items-center justify-center px-1 sm:px-2" aria-hidden="true">
     <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none" className="text-accent">
-      <path d="M0,10 C 30,0 70,20 100,10" stroke="currentColor" strokeWidth="3" strokeDasharray="6,6" fill="none" />
-    </svg>
-  </div>
-);
-
-const DashedLineVertical = () => (
- <div className="w-full md:w-auto md:h-full flex items-center justify-center py-2 md:py-0" aria-hidden="true">
-    <svg width="20" height="100%" viewBox="0 0 20 100" preserveAspectRatio="none" className="text-accent">
-      <path d="M10,0 C 0,30 20,70 10,100" stroke="currentColor" strokeWidth="3" strokeDasharray="6,6" fill="none" />
+      <path d="M0,10 C 30,0 70,20 100,10" stroke="currentColor" strokeWidth="6" strokeDasharray="25,12.5" fill="none" />
     </svg>
   </div>
 );
@@ -68,16 +60,19 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
     <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative overflow-hidden">
       <div className="absolute top-0 left-0 p-2 z-10">
         {isOptional ? (
-          <Lightbulb className="h-6 w-6 sm:h-7 md:h-8 text-accent" />
+          <Lightbulb className="text-accent h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14" />
         ) : (
           stepNumber && (
-            <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-accent">
+            <div className="flex items-center justify-center bg-accent text-accent-foreground rounded-full font-bold
+                            h-10 w-10 text-xl
+                            sm:h-12 sm:w-12 sm:text-2xl
+                            md:h-14 md:w-14 md:text-3xl">
               {stepNumber}
-            </span>
+            </div>
           )
         )}
       </div>
-      <CardHeader className="items-center text-center pt-10 sm:pt-12 md:pt-14 pb-1 sm:pb-1.5 md:pb-2 flex-shrink-0"> {/* Increased top padding */}
+      <CardHeader className="items-center text-center pt-10 sm:pt-12 md:pt-14 pb-1 sm:pb-1.5 md:pb-2 flex-shrink-0">
         {React.cloneElement(step.icon, { className: "h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary mb-1 sm:mb-1.5 md:mb-2" })}
         <CardTitle className="text-xs sm:text-sm md:text-base lg:text-lg text-primary leading-tight px-1">
           {step.title}
@@ -108,7 +103,7 @@ export function ProcessSection() {
         </div>
 
         {/* Desktop View - 3x2 Grid */}
-        <div className="hidden md:flex flex-col items-center space-y-6 lg:space-y-8">
+        <div className="hidden md:flex flex-col items-center space-y-8 lg:space-y-10"> {/* Increased space-y slightly */}
           {/* First Row */}
           <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
             {firstRowSteps.map((step, index) => (
@@ -124,13 +119,6 @@ export function ProcessSection() {
               </React.Fragment>
             ))}
           </div>
-
-          {/* Connecting Line (Vertical) */}
-          {secondRowSteps.length > 0 && (
-            <div className="flex justify-center w-full h-12 sm:h-16 lg:h-20">
-                <DashedLineVertical />
-            </div>
-          )}
 
           {/* Second Row */}
           {secondRowSteps.length > 0 && (
@@ -159,18 +147,14 @@ export function ProcessSection() {
         <div className="md:hidden flex flex-col items-center">
           {processSteps.map((step, index) => (
             <React.Fragment key={step.title + "-mobile"}>
-              <div className="w-full max-w-xs sm:max-w-sm mb-3">
+              <div className="w-full max-w-xs sm:max-w-sm mb-6"> {/* Increased mb slightly for mobile */}
                 <ProcessStepCard
                   step={step}
                   stepNumber={!step.isOptional ? (index + 1) : undefined}
                   isOptional={step.isOptional}
                 />
               </div>
-              {index < processSteps.length - 1 && (
-                <div className="w-full max-w-xs flex justify-center h-12 sm:h-16 my-1">
-                    <DashedLineVertical />
-                </div>
-              )}
+              {/* Vertical connector removed for mobile view */}
             </React.Fragment>
           ))}
         </div>
@@ -178,3 +162,4 @@ export function ProcessSection() {
     </section>
   );
 }
+
