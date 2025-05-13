@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Users, Speaker } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { saveEmail } from '@/app/actions/saveEmail';
+import { saveLead } from '@/app/actions/saveEmail'; // Updated import name
 
 
 const WORDS_PER_HOUR = 9000;
@@ -83,53 +83,58 @@ export const NarrationCostCalculatorSection: NextPage = () => {
       setShowAdditionalFields(true);
     } else {
       setShowAdditionalFields(false);
-      setGenre('');
-      // Do not clear email here as it might have been entered before service/wordcount was cleared
-      // setEmail(''); 
-      setShowCostDisplay(false);
+      setGenre(''); // Reset genre if word count or service changes such that additional fields are hidden
+      setEmail(''); // Reset email as well
+      setShowCostDisplay(false); // Ensure cost display is also reset
     }
   }, [wordCount, selectedService]);
 
-  useEffect(() => {
+  const handleGetEstimate = async () => {
+    const wc = parseInt(wordCount);
     const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
-    if (isEmailValid && showAdditionalFields && genre) {
-      setShowCostDisplay(true);
-    } else {
-      setShowCostDisplay(false);
-    }
-  }, [email, genre, showAdditionalFields]);
 
-  const handleServiceChange = (value: string) => {
-    setSelectedService(value);
-  };
-
-  const handleEmailBlur = async () => {
-    const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
-    if (isEmailValid) {
+    if (wc > 0 && genre && isEmailValid && selectedService) {
+      setShowCostDisplay(true); // Show cost display area
       try {
-        const result = await saveEmail(email);
+        const result = await saveLead({ email, wordCount: wc, genre });
         if (result.success) {
-          if (result.message === "Email saved successfully.") {
-            // console.log("Email saved toast trigger");
-            // toast({ title: "Email Logged", description: "Your email has been noted for our records.", variant: "default" });
-          }
-          // console.log("saveEmail result:", result.message);
+          toast({
+            title: "Estimate Saved",
+            description: "Your estimated cost is displayed and your details have been saved.",
+            variant: "default",
+          });
         } else {
-          // Avoid toasting for "Invalid email format" as client-side checks should handle this more immediately
-          // Also avoid toasting for "Email already captured" to reduce noise
-          if (result.message !== "Invalid email format." && result.message !== "Email already captured.") {
-            // console.log("Email save failed toast trigger");
-            // toast({ title: "Save Error", description: result.message, variant: "destructive" });
-          }
-          // console.warn("saveEmail failed:", result.message);
+          toast({
+            title: "Save Error",
+            description: result.message,
+            variant: "destructive",
+          });
         }
       } catch (error) {
-        console.error("Error calling saveEmail action from client:", error);
-        // toast({ title: "System Error", description: "Could not process email. Please try again.", variant: "destructive" });
+        console.error("Error calling saveLead action from client:", error);
+        toast({
+          title: "System Error",
+          description: "Could not save your estimate. Please try again.",
+          variant: "destructive",
+        });
       }
+    } else {
+      setShowCostDisplay(false); // Ensure cost is hidden if conditions aren't met for estimate
+      let errorMessages: string[] = [];
+      if (!(wc > 0)) errorMessages.push("- Valid word count is required.");
+      if (!selectedService) errorMessages.push("- Service level must be selected.");
+      if (!genre) errorMessages.push("- Genre must be selected.");
+      if (!isEmailValid) errorMessages.push("- A valid email is required.");
+      
+      toast({
+        title: "Missing Information",
+        description: `Please ensure all fields are correctly filled:\n${errorMessages.join("\n")}`,
+        variant: "destructive",
+      });
     }
   };
   
+
   return (
     <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5 scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -139,7 +144,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
               Narration Cost Estimation Tool
             </CardTitle>
             <CardDescription className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-              Estimate the cost of your audiobook production. Results are shown after providing word count, service type, genre and email.
+              Estimate the cost of your audiobook production. Fill in the details below to see your estimate and log your interest.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6 sm:p-8 space-y-8">
@@ -169,7 +174,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
               </Label>
               <RadioGroup
                 value={selectedService ?? undefined}
-                onValueChange={handleServiceChange}
+                onValueChange={setSelectedService}
                 className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4"
               >
                 {Object.values(SERVICE_DETAILS).map((service) => {
@@ -233,15 +238,25 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    onBlur={handleEmailBlur} // Added onBlur handler
                     placeholder="you@example.com"
                     className="text-base"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Enter your email to see the estimate! We respect your privacy and DO NOT share your email.
+                    Your email is required to see the estimate and for our records. We respect your privacy.
                   </p>
                 </div>
               </div>
+            )}
+
+            {/* Button to trigger estimate calculation and saving */} 
+            {showAdditionalFields && !showCostDisplay && (
+                 <Button 
+                    onClick={handleGetEstimate} 
+                    className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold"
+                    disabled={!wordCount || !selectedService || !genre || !email}
+                  >
+                   Calculate & Save Estimate
+                 </Button>
             )}
 
             {showCostDisplay && estimatedCost !== null && (
@@ -256,10 +271,22 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     ${estimatedCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
-                    This is a preliminary estimate. Actual costs may vary based on script complexity, number of distinct voices (for Full Cast), and specific sound design requirements (for Immersive Audio).
+                    This is a preliminary estimate. Actual costs may vary. We have saved your estimate details.
                   </p>
-                  <Button className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm">
-                    Request a Detailed Quote
+                  {/* Optional: Button to request a detailed quote can remain or be modified */}
+                  <Button 
+                    onClick={() => { /* Logic for detailed quote or clear form */ 
+                        setShowCostDisplay(false); 
+                        setWordCount('');
+                        setSelectedService(null);
+                        setGenre('');
+                        setEmail('');
+                        setShowAdditionalFields(false); 
+                        toast({title: "Form Cleared", description: "You can enter new details for another estimate."}) 
+                    }}
+                    className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm"
+                  >
+                    Start New Estimate
                   </Button>
                 </CardContent>
               </Card>
@@ -272,3 +299,4 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 };
 
 export default NarrationCostCalculatorSection;
+

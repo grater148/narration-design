@@ -4,43 +4,56 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
-const EmailSchema = z.string().email({ message: "Invalid email address" });
+const LeadSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  wordCount: z.number().int().positive({ message: "Word count must be a positive number" }),
+  genre: z.string().min(1, { message: "Genre is required" }),
+});
 
-interface SaveEmailResult {
+interface SaveLeadResult {
   success: boolean;
   message: string;
 }
 
-export async function saveEmail(email: string): Promise<SaveEmailResult> {
+export async function saveLead(leadData: { email: string; wordCount: number; genre: string }): Promise<SaveLeadResult> {
   try {
-    const validatedEmail = EmailSchema.safeParse(email);
-    if (!validatedEmail.success) {
-      // console.warn("Invalid email format received by server action:", email, validatedEmail.error.flatten().fieldErrors);
-      return { success: false, message: "Invalid email format." };
+    const validatedLead = LeadSchema.safeParse(leadData);
+    if (!validatedLead.success) {
+      // console.warn("Invalid lead data received by server action:", leadData, validatedLead.error.flatten().fieldErrors);
+      return { success: false, message: "Invalid lead data." };
     }
+
+    const { email, wordCount, genre } = validatedLead.data;
 
     const leadsRef = collection(db, 'costEstimatorLeads');
-    const q = query(leadsRef, where('email', '==', validatedEmail.data));
+    // Optional: Check if a very similar lead (e.g., same email, word count, and genre) was submitted recently
+    // This might be overkill if we're just trying to capture all estimate requests.
+    // For now, we'll check if the email itself exists, similar to the previous logic.
+    const q = query(leadsRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
 
-    if (!querySnapshot.empty) {
-      // Email already exists. We can choose to update a timestamp or simply acknowledge.
-      // For now, let's consider it a success as the email is already captured.
-      // console.log("Email already exists in Firestore:", validatedEmail.data);
-      return { success: true, message: "Email already captured." };
-    }
+    // If we want to allow multiple estimates from the same email but with different parameters,
+    // we might not need to check if the email exists. Or, if we do, the logic for "already captured"
+    // would need to be more nuanced (e.g., update if parameters are different).
+    // For simplicity, if an email exists, we will still save the new estimate data as a new document.
+    // This allows tracking of all estimate interactions.
+
+    // if (!querySnapshot.empty) {
+    //   return { success: true, message: "Email already captured. New estimate not saved if identical." };
+    // }
 
     await addDoc(leadsRef, {
-      email: validatedEmail.data,
+      email,
+      wordCount,
+      genre,
       createdAt: serverTimestamp() as Timestamp, // Firestore server timestamp
       source: 'NarrationCostCalculator',
     });
 
-    // console.log("Email saved to Firestore:", validatedEmail.data);
-    return { success: true, message: "Email saved successfully." };
+    // console.log("Lead data saved to Firestore:", validatedLead.data);
+    return { success: true, message: "Estimate data saved successfully." };
   } catch (error) {
-    console.error("Error saving email to Firestore:", error);
-    // It's good practice to not expose detailed error messages to the client.
-    return { success: false, message: "An error occurred while saving the email. Please try again later." };
+    console.error("Error saving lead data to Firestore:", error);
+    return { success: false, message: "An error occurred while saving the estimate data. Please try again later." };
   }
 }
