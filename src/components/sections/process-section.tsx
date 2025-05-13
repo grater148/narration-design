@@ -86,7 +86,7 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4">
+      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight">
         <div className="overflow-y-auto scrollbar-thin"> 
           <p>{step.description}</p>
         </div>
