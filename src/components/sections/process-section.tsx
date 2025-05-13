@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -58,8 +59,8 @@ const DashedLineHorizontal = () => (
 );
 
 const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof processSteps[0]; stepNumber?: number; isOptional?: boolean }) => (
-  <div className="w-full h-auto md:h-full"> {/* Changed: md:aspect-square to md:h-full. h-auto for mobile, h-full for md+ to respect items-stretch */}
-    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative"> {/* Ensure h-full takes height from parent */}
+  <div className="w-full h-auto md:h-full">
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative">
       <div className="absolute top-0 left-0 p-2 z-10">
         {isOptional ? (
           <div className="flex items-center justify-center bg-accent text-accent-foreground rounded-full font-bold
@@ -80,17 +81,17 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         )}
       </div>
       <CardHeader className="items-center text-center pt-10 sm:pt-12 md:pt-14 pb-1 sm:pb-1.5 md:pb-2 flex-shrink-0">
-        {React.cloneElement(step.icon, { className: "h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary mb-1 sm:mb-1.5 md:mb-2" })}
-        <CardTitle className="text-xs sm:text-sm md:text-base lg:text-lg text-primary leading-tight px-1">
+        {React.cloneElement(step.icon, { className: "h-8 w-8 md:h-10 md:w-10 text-primary mb-1.5 md:mb-2" })} {/* Adjusted icon size for consistency */}
+        <CardTitle className="text-base lg:text-lg text-primary leading-tight px-1"> {/* Applied text-base as base size */}
           {step.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-1 px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4 leading-tight min-h-0">
+      <CardContent className="text-center text-sm text-foreground/75 flex flex-col flex-1 px-2 md:px-3 pt-0 pb-3 md:pb-4 leading-tight min-h-0"> {/* Applied text-sm as base size */}
         <div className="flex-1 overflow-y-auto min-h-0"> 
           <p>{step.description}</p>
         </div>
-        <div className="flex-shrink-0 pt-2 sm:pt-3 flex items-center justify-center">
-          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5 px-3 sm:px-4">
+        <div className="flex-shrink-0 pt-3 flex items-center justify-center"> {/* Adjusted padding */}
+          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-sm leading-snug py-1.5 px-4"> {/* Applied text-sm as base size */}
             Find out more
           </Button>
         </div>
@@ -182,3 +183,4 @@ export function ProcessSection() {
     </section>
   );
 }
+
