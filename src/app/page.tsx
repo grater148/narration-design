@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/hero-section';
 import { ServicesSection } from '@/components/sections/services-section';
 import { ProcessSection } from '@/components/sections/process-section';
 import { HybridApproachSection } from '@/components/sections/hybrid-approach-section';
+import { NarrationCostCalculatorSection } from '@/components/sections/narration-cost-calculator-section';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <ServicesSection />
         <ProcessSection />
         <HybridApproachSection />
+        <NarrationCostCalculatorSection />
         {/* Placeholder for additional sections */}
         <section className="py-16 sm:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
