@@ -90,7 +90,7 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         <div className="overflow-y-auto scrollbar-thin"> 
           <p>{step.description}</p>
         </div>
-        <div className="flex-grow flex items-center justify-center mt-3"> 
+        <div className="flex-grow flex items-center justify-center mt-auto pt-3"> {/* Adjusted pt-3 for spacing, mt-auto pushes to bottom of flex-grow */}
           <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
             Find out more
           </Button>
@@ -123,7 +123,7 @@ export function ProcessSection() {
           <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
             {firstRowSteps.map((step, index) => (
               <React.Fragment key={step.title + "-desktop-row1"}>
-                <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs">
+                <div className="flex-1 min-w-0"> {/* Removed max-width for responsiveness */}
                   <ProcessStepCard step={step} stepNumber={index + 1} />
                 </div>
                 {index < firstRowSteps.length - 1 && (
@@ -140,7 +140,7 @@ export function ProcessSection() {
             <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
               {secondRowSteps.map((step, index) => (
                 <React.Fragment key={step.title + "-desktop-row2"}>
-                  <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs">
+                  <div className="flex-1 min-w-0">  {/* Removed max-width for responsiveness */}
                      <ProcessStepCard
                         step={step}
                         stepNumber={!step.isOptional ? (index + 1 + firstRowSteps.length) : undefined}
@@ -154,6 +154,11 @@ export function ProcessSection() {
                   )}
                 </React.Fragment>
               ))}
+               {/* Ensure the row takes up appropriate space if it has fewer than 3 items by adding invisible placeholders or adjusting flex properties if needed. */}
+               {/* For a 2-item row with a line in between, it's 2 cards + 1 line. Total 3 effective 'slots'. Current map handles this fine. */}
+               {/* If we need to ensure it aligns with the 3-column structure above, even with 2 items, we might need spacers. */}
+               {/* The current logic creates 2 cards and 1 line if secondRowSteps.length is 2. It would be: Card - Line - Card. This is fine. */}
+               {/* If secondRowSteps.length is 1, it's just one card. This is also fine. */}
             </div>
           )}
         </div>
@@ -184,3 +189,4 @@ export function ProcessSection() {
     </section>
   );
 }
+
