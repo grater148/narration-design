@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { AudioLines } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import React from 'react'; // Import React for React.Fragment
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -23,21 +24,25 @@ export function AppHeader() {
 
         {/* Right Aligned Section: Nav Links + Button */}
         <div className="flex items-center space-x-6"> {/* This groups Nav and Button, and adds space between them */}
-          <nav className="hidden md:flex items-center space-x-4"> {/* space-x-4 between individual nav items */}
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors" // Increased font size to text-lg
-              >
-                {link.label}
-              </Link>
+          <nav className="hidden md:flex items-center"> {/* Removed space-x-4, spacing handled by separator margins */}
+            {navLinks.map((link, index) => (
+              <React.Fragment key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </Link>
+                {index < navLinks.length - 1 && (
+                  <span className="mx-3 text-foreground/60" aria-hidden="true">|</span>
+                )}
+              </React.Fragment>
             ))}
           </nav>
           
           <Button 
             asChild 
-            className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-md transform transition-transform hover:scale-105 font-bold" // Added font-bold
+            className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-md transform transition-transform hover:scale-105 font-bold"
           >
             <Link href="#cost-estimation-tool">Audiobook Estimator</Link>
           </Button>
@@ -47,3 +52,4 @@ export function AppHeader() {
     </header>
   );
 }
+
