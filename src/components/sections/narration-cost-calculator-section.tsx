@@ -28,6 +28,7 @@ const fictionGenreOptions = [
   { value: 'contemporary-fiction', label: 'Contemporary Fiction' },
   { value: 'childrens-fiction', label: "Children's Fiction"},
   { value: 'young-adult-fiction', label: "Young Adult (YA) Fiction"},
+  { value: 'other-fiction', label: 'Other (Fiction)'},
 ];
 const nonFictionGenreOptions = [
   { value: 'biography-memoir', label: 'Biography/Memoir' },
@@ -39,6 +40,7 @@ const nonFictionGenreOptions = [
   { value: 'true-crime', label: 'True Crime'},
   { value: 'essays', label: 'Essays'},
   { value: 'spirituality-religion', label: 'Spirituality/Religion'},
+  { value: 'other-non-fiction', label: 'Other (Non-Fiction)'},
 ];
 
 
@@ -186,7 +188,6 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                           <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                         ))}
                       </SelectGroup>
-                      <SelectItem value="other-genre">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
