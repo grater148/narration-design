@@ -1,7 +1,7 @@
 
 import { AudioPlayer } from '@/components/ui/audio-player';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Headphones, Wand2 } from 'lucide-react';
+import { Headphones, Bot } from 'lucide-react'; // Changed Wand2 to Bot
 
 export function HybridApproachSection() {
   return (
@@ -20,7 +20,7 @@ export function HybridApproachSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-10 sm:mb-14">
           <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="items-center text-center">
-              <Wand2 className="h-8 w-8 text-primary mb-2" />
+              <Bot className="h-8 w-8 text-primary mb-2" /> {/* Changed Wand2 to Bot */}
               <CardTitle className="text-xl text-primary">Before (AI-only)</CardTitle>
             </CardHeader>
             <CardContent>
