@@ -5,6 +5,7 @@ import { AudioLines, Menu, X } from 'lucide-react'; // Import Menu and X icons
 import { Button } from '@/components/ui/button';
 import React from 'react'; // Import React for React.Fragment
 import { useState, useEffect } from 'react'; // Import useState and useEffect hooks
+import { useIsMobile } from '@/hooks/use-mobile'; // Corrected import
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -14,24 +15,15 @@ const navLinks = [
 
 export function AppHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu visibility
+  const isMobile = useIsMobile(); // Use the hook
 
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-
+  // This effect will handle showing the mobile menu based on screen size.
+  // It sets isMenuOpen to false when transitioning from mobile to desktop view.
   useEffect(() => {
-    const handleResize = () => {
-      // Show mobile menu for screens smaller than lg (1024px typically)
-      if (window.innerWidth < 1024) {
-        setShowMobileMenu(true);
-      } else {
-        setShowMobileMenu(false);
-        setIsMenuOpen(false); // Close menu if resizing to desktop
-      }
-    };
-
-    handleResize(); // Initial check
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    if (!isMobile && isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  }, [isMobile, isMenuOpen]);
 
 
   return (
@@ -48,15 +40,20 @@ export function AppHeader() {
         {/* Right Aligned Section: Nav Links + Button */}
         <div className="flex items-center space-x-2 sm:space-x-6">
           {/* Hamburger Menu Button for Mobile/Tablet */}
-          {showMobileMenu && (
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-14 w-14" /> : <Menu className="h-14 w-14" />} {/* Increased icon size */}
+          {isMobile && ( // Show only if isMobile is true
+            <Button
+              variant="ghost"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-1 h-16 w-16 lg:hidden" // Custom size for the button, hidden on lg and up
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMenuOpen ? <X className="h-14 w-14" /> : <Menu className="h-14 w-14" />}
             </Button>
           )}
 
           {/* Desktop Navigation */}
-          {!showMobileMenu && (
-            <nav className="hidden lg:flex items-center">
+          {!isMobile && ( // Show only if not isMobile
+            <nav className="flex items-center">
             {/* Removed space-x-4, spacing handled by separator margins */}
             {navLinks.map((link, index) => (
               <React.Fragment key={link.href}>
@@ -74,10 +71,10 @@ export function AppHeader() {
             </nav>
           )}
 
-          {/* Audiobook Estimator Button - always visible on desktop, hidden on mobile unless menu is open */}
-          {!showMobileMenu && (
-             <Button 
-              asChild 
+          {/* Audiobook Estimator Button - always visible on desktop */}
+          {!isMobile && ( // Show only if not isMobile
+             <Button
+              asChild
               className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-md transform transition-transform hover:scale-105 font-bold"
             >
               <Link href="#cost-estimation-tool">Audiobook Estimator</Link>
@@ -86,7 +83,7 @@ export function AppHeader() {
         </div>
       </div>
       {/* Mobile Menu */}
-      {showMobileMenu && isMenuOpen && (
+      {isMobile && isMenuOpen && ( // Show only if isMobile and isMenuOpen are true
         <div className="lg:hidden bg-background border-b">
           <nav className="flex flex-col items-center space-y-4 py-4">
             {navLinks.map((link) => (
@@ -99,8 +96,8 @@ export function AppHeader() {
                 {link.label}
               </Link>
             ))}
-            <Button 
-              asChild 
+            <Button
+              asChild
               className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-md transform transition-transform hover:scale-105 font-bold w-3/4"
               onClick={() => setIsMenuOpen(false)} // Close menu on link click
             >
@@ -112,4 +109,3 @@ export function AppHeader() {
     </header>
   );
 }
-
