@@ -19,8 +19,12 @@ export async function saveLead(leadData: { email: string; wordCount: number; gen
   try {
     const validatedLead = LeadSchema.safeParse(leadData);
     if (!validatedLead.success) {
-      // console.warn("Invalid lead data received by server action:", leadData, validatedLead.error.flatten().fieldErrors);
-      return { success: false, message: "Invalid lead data." };
+      const fieldErrors = validatedLead.error.flatten().fieldErrors;
+      const errorMessages = Object.entries(fieldErrors)
+        .map(([field, messages]) => `${field}: ${messages?.join(', ')}`)
+        .join('; ');
+      console.warn("Invalid lead data received by server action:", leadData, fieldErrors);
+      return { success: false, message: `Invalid lead data. ${errorMessages || 'Please check your input.'}` };
     }
 
     const { email, wordCount, genre } = validatedLead.data;
