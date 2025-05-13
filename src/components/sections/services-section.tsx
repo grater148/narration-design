@@ -1,29 +1,29 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AudioPlayer } from '@/components/ui/audio-player';
-import { MicVocal, Brain, Blend } from 'lucide-react';
+import { User, Users, Speaker } from 'lucide-react';
 
 const services = [
   {
-    icon: <MicVocal className="h-10 w-10 text-primary mb-4" />,
-    title: 'Human Narration',
-    description: 'Experience the rich, emotive power of professional human narrators. Perfect for character-driven stories and expressive content.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder audio
-    aiHint: 'microphone studio'
+    icon: <User className="h-10 w-10 text-primary mb-4" />,
+    title: 'Narration Only',
+    description: 'A single, captivating voice narrates your entire book, perfect for straightforward storytelling and non-fiction.',
+    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', // Placeholder audio
+    aiHint: 'audiobook recording'
   },
   {
-    icon: <Brain className="h-10 w-10 text-primary mb-4" />,
-    title: 'AI Narration',
-    description: 'Leverage cutting-edge AI voice technology for clear, consistent, and cost-effective audiobook production. Ideal for non-fiction and rapid turnarounds.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3', // Placeholder audio
-    aiHint: 'ai technology'
+    icon: <Users className="h-10 w-10 text-primary mb-4" />,
+    title: 'Full Cast',
+    description: 'Bring your characters to life with unique voices for each role, creating a dynamic and engaging listening experience.',
+    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3', // Placeholder audio
+    aiHint: 'voice actors'
   },
   {
-    icon: <Blend className="h-10 w-10 text-primary mb-4" />,
-    title: 'Hybrid Narration',
-    description: 'The best of both worlds. Combine AI precision for bulk narration with human touch for key sections, dialogues, or quality assurance.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3', // Placeholder audio
-    aiHint: 'team collaboration'
+    icon: <Speaker className="h-10 w-10 text-primary mb-4" />,
+    title: 'Immersive Audio',
+    description: 'Go beyond narration with a full cast and rich sound effects, enveloping your listener in the world of your story.',
+    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3', // Placeholder audio
+    aiHint: 'sound design'
   },
 ];
 
@@ -61,3 +61,4 @@ export function ServicesSection() {
     </section>
   );
 }
+
