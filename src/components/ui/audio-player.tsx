@@ -108,7 +108,7 @@ export function AudioPlayer({ audioSrc, trackTitle = "Audio Sample" }: AudioPlay
             className="[&_[role=slider]]:bg-primary [&_[role=slider]]:w-4 [&_[role=slider]]:h-4"
             aria-label="Audio progress"
           />
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
+          <div className="flex justify-between text-sm text-muted-foreground mt-1"> {/* Changed text-xs to text-sm */}
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>

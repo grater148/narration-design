@@ -7,7 +7,7 @@ export function HybridApproachSection() {
   return (
     <section id="hybrid-approach" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/5">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="text-center mb-10 sm:mb-14"> {/* Reduced bottom margin */}
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             Our Hybrid Approach
           </h2>
@@ -31,7 +31,7 @@ export function HybridApproachSection() {
             <p className="text-foreground/80 text-justify">
               Our team focuses on the nuances that AI might miss—subtle inflections, character-specific tones, and the overall emotional arc of your story. This 'human touch' elevates the final product from a mere reading to a truly engaging auditory experience.
             </p>
-            <Card className="bg-background/70 shadow-md">
+            <Card className="bg-card shadow-md"> {/* Changed background to bg-card */}
               <CardHeader>
                 <CardTitle className="text-xl text-primary">Why Hybrid Works</CardTitle>
               </CardHeader>
