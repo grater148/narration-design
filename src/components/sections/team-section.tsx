@@ -1,20 +1,21 @@
 // src/components/sections/team-section.tsx
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users } from "lucide-react"; // Import the Users icon
 
 export function TeamSection() {
   const teamMembers = [
     {
       name: 'Josh Slone',
       title: 'Founder & Narration Director',
-      imageUrl: '/images/profiles/josh-slone.jpg', // Updated to local image
-      bio: "Josh is the visionary founder of Narration.Design, combining his passion for storytelling with expertise in audio production to direct captivating narrations.",
+      imageUrl: '/images/profiles/Josh Profile.png',
+      bio: "Josh is the founder of Narration.Design, combining his passion for storytelling with expertise in AI, audio production, and directing captivating narrations.",
       fallback: 'JS',
       aiHint: 'male portrait',
     },
     {
       name: 'Ella Hartwood',
       title: 'Voice Artist and Marketing Lead',
-      imageUrl: '/images/profiles/ella-hartwood.jpg', // Updated to local image
+      imageUrl: '/images/profiles/Ella Hartwood Profile Pic copy.png',
       bio: "Ella's exceptional vocal talent and keen ear for quality make her an invaluable voice artist and marketing lead, ensuring every audiobook shines.",
       fallback: 'EH',
       aiHint: 'female portrait',
@@ -22,10 +23,10 @@ export function TeamSection() {
     {
       name: 'You?',
       title: 'Looking for Tech Savvy Vocalists!',
-      imageUrl: 'https://via.placeholder.com/200/CCCCCC/FFFFFF?Text=You%3F',
+      // imageUrl removed, we'll use an icon instead
       bio: "Passionate about voice and technology? We're looking for innovative individuals to join our team.",
-      fallback: "Y?",
-      aiHint: "question mark",
+      fallback: <Users size={48} />, // Using Users icon as fallback and primary display
+      aiHint: "multiple users icon",
     },
   ];
 
@@ -43,13 +44,17 @@ export function TeamSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {teamMembers.map((member) => (
             <div key={member.name} className="text-center p-6 bg-background dark:bg-slate-700 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
-              <Avatar className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 shadow-md">
-                <AvatarImage 
-                  src={member.imageUrl} 
-                  alt={`Profile picture of ${member.name}`} 
-                  data-ai-hint={member.aiHint}
-                />
-                <AvatarFallback>{member.fallback || member.name.substring(0, 2)}</AvatarFallback>
+              <Avatar className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 shadow-md flex items-center justify-center">
+                {member.imageUrl ? (
+                  <AvatarImage 
+                    src={member.imageUrl} 
+                    alt={`Profile picture of ${member.name}`} 
+                    data-ai-hint={member.aiHint}
+                  />
+                ) : null}
+                <AvatarFallback>
+                  {member.imageUrl ? member.fallback : (member.fallback)}
+                </AvatarFallback>
               </Avatar>
               <h3 className="text-xl font-semibold mb-1 text-primary">{member.name}</h3>
               <p className="text-accent dark:text-accent-foreground font-medium">{member.title}</p>

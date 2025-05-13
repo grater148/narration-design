@@ -5,7 +5,8 @@ import { ServicesSection } from '@/components/sections/services-section';
 import { ProcessSection } from '@/components/sections/process-section';
 import { HybridApproachSection } from '@/components/sections/hybrid-approach-section';
 import { NarrationCostCalculatorSection } from '@/components/sections/narration-cost-calculator-section';
-import { TeamSection } from '@/components/sections/team-section'; // Added import
+import { TeamSection } from '@/components/sections/team-section';
+import { ContactSection } from '@/components/sections/contact-section'; // Added import for ContactSection
 
 export default function Home() {
   return (
@@ -17,7 +18,8 @@ export default function Home() {
         <ProcessSection />
         <HybridApproachSection />
         <NarrationCostCalculatorSection />
-        <TeamSection /> {/* Added new section here */}
+        <TeamSection />
+        <ContactSection /> {/* Added new ContactSection here */}
         {/* Placeholder for additional sections if needed later */}
         {/* 
         <section className="py-16 sm:py-24">
