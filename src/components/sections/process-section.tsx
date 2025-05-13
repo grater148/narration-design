@@ -14,44 +14,46 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const processSteps = [
   {
     title: "Manuscript Submission",
-    icon: <BookMarked className="h-10 w-10 text-primary mb-3" />,
+    icon: <BookMarked className="h-10 w-10 text-primary mb-4" />, // Increased mb for spacing
     description: "Securely submit your manuscript through our easy-to-use portal.",
   },
   {
     title: "Voice Selection",
-    icon: <UsersRound className="h-10 w-10 text-primary mb-3" />,
+    icon: <UsersRound className="h-10 w-10 text-primary mb-4" />, // Increased mb for spacing
     description: "Choose from our diverse pool of talented human narrators or opt for a high-quality AI voice.",
   },
   {
     title: "First Chapter Milestone",
-    icon: <Award className="h-10 w-10 text-primary mb-3" />,
+    icon: <Award className="h-10 w-10 text-primary mb-4" />, // Increased mb for spacing
     description: "Review and approve the first chapter to ensure the narration meets your expectations.",
   },
   {
     title: "Full Transparency Throughout",
-    icon: <ShieldCheck className="h-10 w-10 text-primary mb-3" />,
+    icon: <ShieldCheck className="h-10 w-10 text-primary mb-4" />, // Increased mb for spacing
     description: "Stay informed with regular updates and access to our project tracking system.",
   },
   {
     title: "Delivery!",
-    icon: <Rocket className="h-10 w-10 text-primary mb-3" />,
+    icon: <Rocket className="h-10 w-10 text-primary mb-4" />, // Increased mb for spacing
     description: "Receive your professionally produced, ready-to-publish audiobook files.",
   },
 ];
 
-const DashedArrow = () => (
+const CurvedDashedArrow = () => (
   <div className="flex-grow flex items-center justify-center px-1 sm:px-2" aria-hidden="true">
     <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none" className="text-accent">
-      <line x1="0" y1="10" x2="90" y2="10" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" />
+      {/* M(start) C(control1) (control2) (end) */}
+      <path d="M0,10 C 30,0 70,20 90,10" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" fill="none" />
       <polygon points="85,5 100,10 85,15" fill="currentColor" />
     </svg>
   </div>
 );
 
-const DashedArrowVertical = () => (
+const CurvedDashedArrowVertical = () => (
  <div className="w-full flex items-center justify-center py-4 h-20" aria-hidden="true">
     <svg width="20" height="100%" viewBox="0 0 20 100" preserveAspectRatio="none" className="text-accent">
-      <line x1="10" y1="0" x2="10" y2="90" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" />
+      {/* M(start) C(control1) (control2) (end) */}
+      <path d="M10,0 C 0,30 20,70 10,90" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" fill="none" />
       <polygon points="5,85 10,100 15,85" fill="currentColor" />
     </svg>
   </div>
@@ -75,19 +77,19 @@ export function ProcessSection() {
           {processSteps.map((step, index) => (
             <React.Fragment key={step.title}>
               <div className="flex-1 min-w-0 px-1 lg:px-2"> {/* Card container */}
-                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
-                  <CardHeader className="items-center text-center pt-6">
+                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full md:min-h-[300px] lg:min-h-[320px]">
+                  <CardHeader className="items-center text-center pt-8"> {/* Increased pt */}
                     {step.icon}
                     <CardTitle className="text-xl lg:text-2xl text-primary">{step.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="text-center text-sm lg:text-base text-foreground/75 pb-6 flex-grow">
+                  <CardContent className="text-center text-sm lg:text-base text-foreground/75 pb-8 flex-grow"> {/* Increased pb */}
                     <p>{step.description}</p>
                   </CardContent>
                 </Card>
               </div>
               {index < processSteps.length - 1 && (
                 <div className="flex-shrink-0 flex items-center justify-center w-12 lg:w-20 xl:w-24"> {/* Arrow container */}
-                  <DashedArrow />
+                  <CurvedDashedArrow />
                 </div>
               )}
             </React.Fragment>
@@ -100,17 +102,17 @@ export function ProcessSection() {
             <React.Fragment key={step.title}>
               <div className="w-full max-w-md p-2">
                 <Card className="shadow-lg">
-                  <CardHeader className="items-center text-center pt-6">
+                  <CardHeader className="items-center text-center pt-8"> {/* Increased pt */}
                     {step.icon}
                     <CardTitle className="text-xl text-primary">{step.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="text-center text-sm text-foreground/75 pb-6">
+                  <CardContent className="text-center text-sm text-foreground/75 pb-8"> {/* Increased pb */}
                     <p>{step.description}</p>
                   </CardContent>
                 </Card>
               </div>
               {index < processSteps.length - 1 && (
-                <DashedArrowVertical />
+                <CurvedDashedArrowVertical />
               )}
             </React.Fragment>
           ))}
