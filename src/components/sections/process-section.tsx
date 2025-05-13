@@ -8,10 +8,10 @@ import {
   Award,
   ShieldCheck,
   Rocket,
-  UploadCloud, // Added for new step
+  UploadCloud,
+  Lightbulb, // Added for optional step
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 
 const processSteps = [
   {
@@ -35,39 +35,49 @@ const processSteps = [
     description: "Stay informed with regular updates and access to our project tracking system.",
   },
   {
-    title: "Publishing Assistance (Optional)", // New Step
-    icon: <UploadCloud className="h-10 w-10 text-primary" />,
-    description: "Optionally, get expert help to navigate submission for platforms like Findaway Voices.",
-  },
-  {
     title: "Delivery!",
     icon: <Rocket className="h-10 w-10 text-primary" />,
     description: "Receive your professionally produced, ready-to-publish audiobook files.",
   },
+  {
+    title: "Publishing Assistance (Optional)",
+    icon: <UploadCloud className="h-10 w-10 text-primary" />, // Main icon
+    description: "Optionally, get expert help to navigate submission for platforms like Findaway Voices.",
+    isOptional: true,
+  },
 ];
 
-const CurvedDashedArrowHorizontal = () => (
+const DashedLineHorizontal = () => (
   <div className="flex-grow flex items-center justify-center px-1 sm:px-2" aria-hidden="true">
     <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none" className="text-accent">
-      <path d="M0,10 C 30,0 70,20 90,10" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" fill="none" />
-      <polygon points="88,4 100,10 88,16" fill="currentColor" /> {/* Adjusted arrowhead */}
+      <path d="M0,10 C 30,0 70,20 100,10" stroke="currentColor" strokeWidth="3" strokeDasharray="6,6" fill="none" />
     </svg>
   </div>
 );
 
-const CurvedDashedArrowVertical = () => (
+const DashedLineVertical = () => (
  <div className="w-full md:w-auto md:h-full flex items-center justify-center py-2 md:py-0" aria-hidden="true">
     <svg width="20" height="100%" viewBox="0 0 20 100" preserveAspectRatio="none" className="text-accent">
-      <path d="M10,0 C 0,30 20,70 10,90" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" fill="none" />
-      <polygon points="4,88 10,100 16,88" fill="currentColor" /> {/* Adjusted arrowhead */}
+      <path d="M10,0 C 0,30 20,70 10,100" stroke="currentColor" strokeWidth="3" strokeDasharray="6,6" fill="none" />
     </svg>
   </div>
 );
 
-const ProcessStepCard = ({ step }: { step: typeof processSteps[0] }) => (
-  <div className="aspect-square w-full h-full"> {/* Outer div controls aspect ratio and takes full width/height of parent */}
-    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full">
-      <CardHeader className="items-center text-center pt-3 pb-1 sm:pt-4 sm:pb-1.5 md:pt-6 md:pb-2 flex-shrink-0">
+const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof processSteps[0]; stepNumber?: number; isOptional?: boolean }) => (
+  <div className="aspect-square w-full h-full">
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full w-full relative overflow-hidden">
+      <div className="absolute top-0 left-0 p-2 z-10">
+        {isOptional ? (
+          <Lightbulb className="h-6 w-6 sm:h-7 md:h-8 text-accent" />
+        ) : (
+          stepNumber && (
+            <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-accent">
+              {stepNumber}
+            </span>
+          )
+        )}
+      </div>
+      <CardHeader className="items-center text-center pt-10 sm:pt-12 md:pt-14 pb-1 sm:pb-1.5 md:pb-2 flex-shrink-0"> {/* Increased top padding */}
         {React.cloneElement(step.icon, { className: "h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary mb-1 sm:mb-1.5 md:mb-2" })}
         <CardTitle className="text-xs sm:text-sm md:text-base lg:text-lg text-primary leading-tight px-1">
           {step.title}
@@ -103,22 +113,22 @@ export function ProcessSection() {
           <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
             {firstRowSteps.map((step, index) => (
               <React.Fragment key={step.title + "-desktop-row1"}>
-                <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs"> {/* Wrapper for card size control */}
-                  <ProcessStepCard step={step} />
+                <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs">
+                  <ProcessStepCard step={step} stepNumber={index + 1} />
                 </div>
                 {index < firstRowSteps.length - 1 && (
                   <div className="flex-shrink-0 flex items-center justify-center w-10 sm:w-12 md:w-16 self-center">
-                    <CurvedDashedArrowHorizontal />
+                    <DashedLineHorizontal />
                   </div>
                 )}
               </React.Fragment>
             ))}
           </div>
 
-          {/* Connecting Arrow (Vertical) */}
+          {/* Connecting Line (Vertical) */}
           {secondRowSteps.length > 0 && (
             <div className="flex justify-center w-full h-12 sm:h-16 lg:h-20">
-                <CurvedDashedArrowVertical />
+                <DashedLineVertical />
             </div>
           )}
 
@@ -127,12 +137,16 @@ export function ProcessSection() {
             <div className="flex flex-row items-stretch justify-center w-full gap-x-4 sm:gap-x-6 lg:gap-x-8">
               {secondRowSteps.map((step, index) => (
                 <React.Fragment key={step.title + "-desktop-row2"}>
-                  <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs">  {/* Wrapper for card size control */}
-                     <ProcessStepCard step={step} />
+                  <div className="flex-1 min-w-0 max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-xs">
+                     <ProcessStepCard
+                        step={step}
+                        stepNumber={!step.isOptional ? (index + 1 + firstRowSteps.length) : undefined}
+                        isOptional={step.isOptional}
+                      />
                   </div>
                   {index < secondRowSteps.length - 1 && (
                      <div className="flex-shrink-0 flex items-center justify-center w-10 sm:w-12 md:w-16 self-center">
-                       <CurvedDashedArrowHorizontal />
+                       <DashedLineHorizontal />
                      </div>
                   )}
                 </React.Fragment>
@@ -145,12 +159,16 @@ export function ProcessSection() {
         <div className="md:hidden flex flex-col items-center">
           {processSteps.map((step, index) => (
             <React.Fragment key={step.title + "-mobile"}>
-              <div className="w-full max-w-xs sm:max-w-sm mb-3"> {/* Card container for mobile */}
-                <ProcessStepCard step={step} />
+              <div className="w-full max-w-xs sm:max-w-sm mb-3">
+                <ProcessStepCard
+                  step={step}
+                  stepNumber={!step.isOptional ? (index + 1) : undefined}
+                  isOptional={step.isOptional}
+                />
               </div>
               {index < processSteps.length - 1 && (
-                <div className="w-full max-w-xs flex justify-center h-12 sm:h-16 my-1"> {/* Vertical arrow container for mobile */}
-                    <CurvedDashedArrowVertical />
+                <div className="w-full max-w-xs flex justify-center h-12 sm:h-16 my-1">
+                    <DashedLineVertical />
                 </div>
               )}
             </React.Fragment>
@@ -160,5 +178,3 @@ export function ProcessSection() {
     </section>
   );
 }
-
-    
