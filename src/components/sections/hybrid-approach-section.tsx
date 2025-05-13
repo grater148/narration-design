@@ -5,7 +5,7 @@ import { Headphones, Wand2 } from 'lucide-react';
 
 export function HybridApproachSection() {
   return (
-    <section id="hybrid-approach" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/5">
+    <section id="hybrid-approach" className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-secondary/5 scroll-mt-20"> {/* Added scroll-mt-20 */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-14"> {/* Reduced bottom margin */}
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">

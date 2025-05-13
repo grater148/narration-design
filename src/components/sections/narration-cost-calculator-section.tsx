@@ -99,7 +99,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   };
   
   return (
-    <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5">
+    <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5 scroll-mt-20"> {/* Added scroll-mt-20 */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="max-w-3xl mx-auto shadow-xl bg-card">
           <CardHeader className="text-center px-6 pt-8 sm:px-8 sm:pt-10">

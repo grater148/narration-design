@@ -31,7 +31,7 @@ const services = [
 
 export function ServicesSection() {
   return (
-    <section id="services" className="py-16 sm:py-24 bg-background">
+    <section id="services" className="py-16 sm:py-24 bg-background scroll-mt-20"> {/* Added scroll-mt-20 */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
