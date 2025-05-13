@@ -51,7 +51,8 @@ const processSteps = [
 const DashedLineHorizontal = () => (
   <div className="flex-grow flex items-center justify-center px-1 sm:px-2" aria-hidden="true">
     <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none" className="text-accent">
-      <path d="M0,10 C 30,0 70,20 100,10" stroke="currentColor" strokeWidth="6" strokeDasharray="25,12.5" fill="none" />
+      {/* Adjusted path for thicker, fewer dashes - effectively 3 very thick dashes with gaps */}
+      <path d="M0,10 C 30,0 70,20 100,10" stroke="currentColor" strokeWidth="8" strokeDasharray="30, 15" fill="none" />
     </svg>
   </div>
 );
@@ -85,11 +86,11 @@ const ProcessStepCard = ({ step, stepNumber, isOptional }: { step: typeof proces
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center text-[0.65rem] sm:text-xs md:text-sm text-foreground/75 flex flex-col flex-grow px-1.5 sm:px-2 md:px-3 pt-0 pb-2 sm:pb-3 md:pb-4">
-        <div className="flex-grow overflow-y-auto scrollbar-thin mb-2 sm:mb-3">
+        <div className="flex-grow overflow-y-auto scrollbar-thin mb-5">
           <p>{step.description}</p>
         </div>
         <div className="shrink-0">
-          <Button size="sm" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
+          <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs sm:text-sm leading-snug py-1.5">
             Find out more
           </Button>
         </div>
@@ -175,3 +176,4 @@ export function ProcessSection() {
     </section>
   );
 }
+
