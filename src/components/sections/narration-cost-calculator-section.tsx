@@ -343,7 +343,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                       className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 text-sm w-full sm:w-auto"
                       disabled={isLoading}
                     >
-                      <Link href="/contact">Book a Consult</Link>
+                      <Link href="https://narration-design.agiled.app/event/4b29fa4efe4fb7bc667c7b301b74d52d" target="_blank" rel="noopener noreferrer">Book a Consult</Link>
                     </Button>
                   </div>
                 </CardContent>
