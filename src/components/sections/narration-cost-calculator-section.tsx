@@ -159,11 +159,11 @@ export const NarrationCostCalculatorSection: NextPage = () => {
           </CardHeader>
           <CardContent className="p-6 sm:p-8 space-y-8">
             <div>
-              <Label htmlFor="wordCount" className="text-lg font-medium text-primary mb-2 block">
+              <Label htmlFor="narration-wordCount" className="text-lg font-medium text-primary mb-2 block">
                 1. Your manuscript&apos;s word count:
               </Label>
               <Input
-                id="wordCount"
+                id="narration-wordCount"
                 type="number"
                 value={wordCount}
                 onChange={(e) => setWordCount(e.target.value)}
@@ -171,6 +171,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 className="text-base"
                 min="0"
                 disabled={isLoading}
+                autoComplete="off"
               />
               {estimatedHours !== null && (
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -192,9 +193,9 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   const Icon = service.icon;
                   return (
                     <React.Fragment key={service.id}>
-                      <RadioGroupItem value={service.id} id={`service-${service.id}`} className="sr-only" disabled={isLoading} />
+                      <RadioGroupItem value={service.id} id={`narration-service-${service.id}`} className="sr-only" disabled={isLoading} />
                       <Label
-                        htmlFor={`service-${service.id}`}
+                        htmlFor={`narration-service-${service.id}`}
                         className={`
                           flex flex-col items-center justify-center p-4 rounded-lg border-2 cursor-pointer
                           transition-all duration-200 ease-in-out h-full
@@ -217,11 +218,11 @@ export const NarrationCostCalculatorSection: NextPage = () => {
             {showAdditionalFields && (
               <div className="space-y-8 pt-6 border-t border-border/50">
                 <div>
-                  <Label htmlFor="genre" className="text-lg font-medium text-primary mb-2 block">
+                  <Label htmlFor="narration-genre" className="text-lg font-medium text-primary mb-2 block">
                     3. Select Genre:
                   </Label>
                   <Select value={genre} onValueChange={(value) => !isLoading && setGenre(value)} disabled={isLoading}>
-                    <SelectTrigger id="genre" className="mt-1 w-full text-base">
+                    <SelectTrigger id="narration-genre" className="mt-1 w-full text-base">
                       <SelectValue placeholder="Choose a genre..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -242,11 +243,11 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="firstName" className="text-lg font-medium text-primary mb-2 block">
+                  <Label htmlFor="narration-firstName" className="text-lg font-medium text-primary mb-2 block">
                     4. Your First Name:
                   </Label>
                   <Input
-                    id="firstName"
+                    id="narration-firstName"
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -254,6 +255,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     className="text-base"
                     required
                     disabled={isLoading}
+                    autoComplete="given-name"
                   />
                    <p className="mt-1 text-xs text-muted-foreground">
                     Your first name is required.
@@ -261,17 +263,18 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="text-lg font-medium text-primary mb-2 block">
+                  <Label htmlFor="narration-email" className="text-lg font-medium text-primary mb-2 block">
                     5. Your Email Address:
                   </Label>
                   <Input
-                    id="email"
+                    id="narration-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="text-base"
                     disabled={isLoading}
+                    autoComplete="email"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
                     Your email is required to see the estimate and for our records. We respect your privacy.
