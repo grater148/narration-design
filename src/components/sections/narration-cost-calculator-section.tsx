@@ -3,6 +3,7 @@
 
 import type { NextPage } from 'next';
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link'; // Import Link for navigation
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -111,8 +112,8 @@ export const NarrationCostCalculatorSection: NextPage = () => {
         if (result.success) {
           setShowCostDisplay(true);
           toast({
-            title: "Estimate Saved",
-            description: result.message || "Your estimated cost is displayed and your details have been saved.",
+            title: "Estimate Generated Successfully", // Updated Toast Title
+            description: "Your estimate has been calculated and saved.", // Updated Toast Description
             variant: "default",
           });
         } else {
@@ -320,22 +321,31 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   <p className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
                     This is a preliminary estimate. Actual costs may vary. We have saved your estimate details.
                   </p>
-                  <Button
-                    onClick={() => {
-                        setShowCostDisplay(false);
-                        setWordCount('');
-                        setSelectedService(null);
-                        setGenre('');
-                        setFirstName('');
-                        setEmail('');
-                        setShowAdditionalFields(false);
-                        toast({title: "Form Cleared", description: "You can enter new details for another estimate."})
-                    }}
-                    className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm"
-                    disabled={isLoading}
-                  >
-                    Start New Estimate
-                  </Button>
+                  <div className="mt-4 flex flex-col sm:flex-row justify-center items-center gap-3">
+                    <Button
+                      onClick={() => {
+                          setShowCostDisplay(false);
+                          setWordCount('');
+                          setSelectedService(null);
+                          setGenre('');
+                          setFirstName('');
+                          setEmail('');
+                          setShowAdditionalFields(false);
+                          toast({title: "Form Cleared", description: "You can enter new details for another estimate."})
+                      }}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm w-full sm:w-auto"
+                      disabled={isLoading}
+                    >
+                      Start New Estimate
+                    </Button>
+                    <Button
+                      asChild 
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 text-sm w-full sm:w-auto"
+                      disabled={isLoading}
+                    >
+                      <Link href="/contact">Book a Consult</Link>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             )}

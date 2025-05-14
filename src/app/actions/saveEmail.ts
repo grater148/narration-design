@@ -85,7 +85,7 @@ export async function saveLead(leadData: {
 
     // 2. Sync with Agiled CRM
     try {
-      const agiledApiEndpoint = `/api/agiled/contacts`; 
+      const agiledApiEndpoint = 'https://api.agiled.app/api/v1/contacts'; 
       const payload = {
         email: email,
         first_name: firstName,
