@@ -12,7 +12,7 @@ export function HybridApproachSection() {
             Our Hybrid Approach
           </h2>
           <p className="mt-4 text-lg text-foreground/80 max-w-3xl mx-auto">
-            We combine the best of human artistry and AI efficiency to produce high-quality audiobooks at fair prices, ensuring your story resonates with listeners.
+            We combine the best of human artistry and AI efficiency to produce high-quality audiobooks at fair prices, ensuring your story resonates with listeners. Take a listen to the difference for yourself!
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export function HybridApproachSection() {
                 Listen to a raw AI-generated sample. Notice the clarity, but also areas where human nuance could enhance the delivery.
               </p>
               <AudioPlayer 
-                audioSrc="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Placeholder
+                audioSrc="/audio/Before Audio.mp3" // Placeholder
                 trackTitle="Before (AI-only) Sample"
               />
             </CardContent>
@@ -44,7 +44,7 @@ export function HybridApproachSection() {
                 Hear the difference after our experts have refined the AI narration, adding depth, emotion, and polish.
               </p>
               <AudioPlayer 
-                audioSrc="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" // Placeholder
+                audioSrc="/audio/After Audio.mp3" // Placeholder
                 trackTitle="After Our Human Touch Sample"
               />
             </CardContent>

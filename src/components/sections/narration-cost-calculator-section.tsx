@@ -53,7 +53,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   const [genre, setGenre] = useState('');
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const [estimatedHours, setEstimatedHours] = useState<number | null>(null);
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
@@ -94,23 +94,29 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 
   const handleGetEstimate = async () => {
     console.log("CLIENT: handleGetEstimate function called");
-    setIsLoading(true); // Set loading to true
+    setIsLoading(true);
     const wc = parseInt(wordCount);
     const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
     const isFirstNameValid = firstName.trim() !== '';
 
     if (wc > 0 && genre && isFirstNameValid && isEmailValid && selectedService) {
       try {
-        const result = await saveLead({ firstName: firstName.trim(), email, wordCount: wc, genre });
+        const result = await saveLead({
+          firstName: firstName.trim(),
+          email,
+          wordCount: wc,
+          genre,
+          selectedService
+        });
         if (result.success) {
           setShowCostDisplay(true);
           toast({
             title: "Estimate Saved",
-            description: "Your estimated cost is displayed and your details have been saved.",
+            description: result.message || "Your estimated cost is displayed and your details have been saved.",
             variant: "default",
           });
         } else {
-           setShowCostDisplay(false); // Keep form visible to correct errors
+           setShowCostDisplay(false);
           toast({
             title: "Save Error",
             description: result.message || "An unknown error occurred while saving your estimate.",
@@ -119,7 +125,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
         }
       } catch (error) {
         console.error("Error calling saveLead action from client:", error);
-        setShowCostDisplay(false); // Keep form visible
+        setShowCostDisplay(false);
         toast({
           title: "System Error",
           description: error instanceof Error ? error.message : "Could not save your estimate. Please try again.",
@@ -129,21 +135,21 @@ export const NarrationCostCalculatorSection: NextPage = () => {
     } else {
       setShowCostDisplay(false);
       let errorMessages: string[] = [];
-      if (!(wc > 0)) errorMessages.push("- Valid word count is required.");
+      if (!(wc > 0)) errorMessages.push("- Valid wordCount is required.");
       if (!selectedService) errorMessages.push("- Service level must be selected.");
       if (!genre) errorMessages.push("- Genre must be selected.");
       if (!isFirstNameValid) errorMessages.push("- First name is required.");
       if (!isEmailValid) errorMessages.push("- A valid email is required.");
-      
+
       toast({
         title: "Missing Information",
         description: `Please ensure all fields are correctly filled:\n${errorMessages.join("\n")}`,
         variant: "destructive",
       });
     }
-    setIsLoading(false); // Set loading to false
+    setIsLoading(false);
   };
-  
+
 
   return (
     <section id="cost-estimation-tool" className="py-16 sm:py-24 bg-secondary/5 scroll-mt-20">
@@ -277,15 +283,15 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     autoComplete="email"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Your email is required to see the estimate and for our records. We respect your privacy.
+                    Enter your email to see the estimate! We respect your privacy and DO NOT share your email.
                   </p>
                 </div>
               </div>
             )}
 
             {showAdditionalFields && !showCostDisplay && (
-                 <Button 
-                    onClick={handleGetEstimate} 
+                 <Button
+                    onClick={handleGetEstimate}
                     className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold"
                     disabled={!wordCount || !selectedService || !genre || !firstName || !email || isLoading}
                   >
@@ -314,16 +320,16 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   <p className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
                     This is a preliminary estimate. Actual costs may vary. We have saved your estimate details.
                   </p>
-                  <Button 
-                    onClick={() => { 
-                        setShowCostDisplay(false); 
+                  <Button
+                    onClick={() => {
+                        setShowCostDisplay(false);
                         setWordCount('');
                         setSelectedService(null);
                         setGenre('');
                         setFirstName('');
                         setEmail('');
-                        setShowAdditionalFields(false); 
-                        toast({title: "Form Cleared", description: "You can enter new details for another estimate."}) 
+                        setShowAdditionalFields(false);
+                        toast({title: "Form Cleared", description: "You can enter new details for another estimate."})
                     }}
                     className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm"
                     disabled={isLoading}
