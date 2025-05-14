@@ -25,13 +25,16 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    allowedDevOrigins: ["9009-firebase-studio-1747131474128.cluster-pgviq6mvsncnqxx6kr7pbz65v6.cloudworkstations.dev"],
+    allowedDevOrigins: [
+      "9009-firebase-studio-1747131474128.cluster-pgviq6mvsncnqxx6kr7pbz65v6.cloudworkstations.dev",
+      "9010-firebase-studio-1747131474128.cluster-pgviq6mvsncnqxx6kr7pbz65v6.cloudworkstations.dev"
+    ],
   },
   async rewrites() {
     return [
       {
         source: '/api/agiled/:path*', // Requests to your app at /api/agiled/...
-        destination: 'https://api.agiled.app/v1/:path*', // Will be proxied to Agiled CRM
+        destination: 'https://api.agiled.app/api/v1/:path*', // Will be proxied to Agiled CRM
       },
     ];
   },

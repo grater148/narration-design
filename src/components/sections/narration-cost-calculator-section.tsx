@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { User, Users, Speaker } from 'lucide-react';
+import { User, Users, Speaker, Loader2 } from 'lucide-react'; // Added Loader2
 import { useToast } from "@/hooks/use-toast";
 import { saveLead } from '@/app/actions/saveEmail';
 
@@ -51,8 +51,9 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   const [wordCount, setWordCount] = useState('');
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [genre, setGenre] = useState('');
-  const [firstName, setFirstName] = useState(''); // Added: State for First Name
+  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
 
   const [estimatedHours, setEstimatedHours] = useState<number | null>(null);
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
@@ -85,41 +86,43 @@ export const NarrationCostCalculatorSection: NextPage = () => {
     } else {
       setShowAdditionalFields(false);
       setGenre('');
-      setFirstName(''); // Added: Reset firstName
+      setFirstName('');
       setEmail('');
       setShowCostDisplay(false);
     }
   }, [wordCount, selectedService]);
 
   const handleGetEstimate = async () => {
+    console.log("CLIENT: handleGetEstimate function called");
+    setIsLoading(true); // Set loading to true
     const wc = parseInt(wordCount);
     const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
-    const isFirstNameValid = firstName.trim() !== ''; // Added: Validate firstName
+    const isFirstNameValid = firstName.trim() !== '';
 
-    // Added: firstName validation
     if (wc > 0 && genre && isFirstNameValid && isEmailValid && selectedService) {
-      setShowCostDisplay(true);
       try {
-        // Added: Pass firstName to saveLead
         const result = await saveLead({ firstName: firstName.trim(), email, wordCount: wc, genre });
         if (result.success) {
+          setShowCostDisplay(true);
           toast({
             title: "Estimate Saved",
             description: "Your estimated cost is displayed and your details have been saved.",
             variant: "default",
           });
         } else {
+           setShowCostDisplay(false); // Keep form visible to correct errors
           toast({
             title: "Save Error",
-            description: result.message,
+            description: result.message || "An unknown error occurred while saving your estimate.",
             variant: "destructive",
           });
         }
       } catch (error) {
         console.error("Error calling saveLead action from client:", error);
+        setShowCostDisplay(false); // Keep form visible
         toast({
           title: "System Error",
-          description: "Could not save your estimate. Please try again.",
+          description: error instanceof Error ? error.message : "Could not save your estimate. Please try again.",
           variant: "destructive",
         });
       }
@@ -129,7 +132,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
       if (!(wc > 0)) errorMessages.push("- Valid word count is required.");
       if (!selectedService) errorMessages.push("- Service level must be selected.");
       if (!genre) errorMessages.push("- Genre must be selected.");
-      if (!isFirstNameValid) errorMessages.push("- First name is required."); // Added: Error message for firstName
+      if (!isFirstNameValid) errorMessages.push("- First name is required.");
       if (!isEmailValid) errorMessages.push("- A valid email is required.");
       
       toast({
@@ -138,6 +141,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
         variant: "destructive",
       });
     }
+    setIsLoading(false); // Set loading to false
   };
   
 
@@ -166,6 +170,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 placeholder="e.g., 90000"
                 className="text-base"
                 min="0"
+                disabled={isLoading}
               />
               {estimatedHours !== null && (
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -180,14 +185,14 @@ export const NarrationCostCalculatorSection: NextPage = () => {
               </Label>
               <RadioGroup
                 value={selectedService ?? undefined}
-                onValueChange={setSelectedService}
+                onValueChange={(value) => !isLoading && setSelectedService(value)}
                 className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4"
               >
                 {Object.values(SERVICE_DETAILS).map((service) => {
                   const Icon = service.icon;
                   return (
                     <React.Fragment key={service.id}>
-                      <RadioGroupItem value={service.id} id={`service-${service.id}`} className="sr-only" />
+                      <RadioGroupItem value={service.id} id={`service-${service.id}`} className="sr-only" disabled={isLoading} />
                       <Label
                         htmlFor={`service-${service.id}`}
                         className={`
@@ -195,6 +200,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                           transition-all duration-200 ease-in-out h-full
                           hover:shadow-md
                           ${selectedService === service.id ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card hover:border-primary/40'}
+                          ${isLoading ? 'cursor-not-allowed opacity-50' : ''}
                         `}
                       >
                         <Icon className={`h-8 w-8 mb-2 ${selectedService === service.id ? 'text-primary' : 'text-muted-foreground'}`} />
@@ -214,7 +220,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   <Label htmlFor="genre" className="text-lg font-medium text-primary mb-2 block">
                     3. Select Genre:
                   </Label>
-                  <Select value={genre} onValueChange={setGenre}>
+                  <Select value={genre} onValueChange={(value) => !isLoading && setGenre(value)} disabled={isLoading}>
                     <SelectTrigger id="genre" className="mt-1 w-full text-base">
                       <SelectValue placeholder="Choose a genre..." />
                     </SelectTrigger>
@@ -235,7 +241,6 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   </Select>
                 </div>
 
-                {/* Added: First Name Input Field */}
                 <div>
                   <Label htmlFor="firstName" className="text-lg font-medium text-primary mb-2 block">
                     4. Your First Name:
@@ -247,7 +252,8 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="e.g., Alex"
                     className="text-base"
-                    required // Added: HTML5 required attribute
+                    required
+                    disabled={isLoading}
                   />
                    <p className="mt-1 text-xs text-muted-foreground">
                     Your first name is required.
@@ -255,7 +261,6 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 </div>
 
                 <div>
-                  {/* Adjusted numbering due to new field */}
                   <Label htmlFor="email" className="text-lg font-medium text-primary mb-2 block">
                     5. Your Email Address:
                   </Label>
@@ -266,6 +271,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="text-base"
+                    disabled={isLoading}
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
                     Your email is required to see the estimate and for our records. We respect your privacy.
@@ -278,10 +284,16 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                  <Button 
                     onClick={handleGetEstimate} 
                     className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold"
-                    // Added: firstName to disabled condition
-                    disabled={!wordCount || !selectedService || !genre || !firstName || !email}
+                    disabled={!wordCount || !selectedService || !genre || !firstName || !email || isLoading}
                   >
-                   Calculate & Save Estimate
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Calculating...
+                    </>
+                  ) : (
+                   "Calculate & Save Estimate"
+                  )}
                  </Button>
             )}
 
@@ -305,12 +317,13 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                         setWordCount('');
                         setSelectedService(null);
                         setGenre('');
-                        setFirstName(''); // Added: Reset firstName
+                        setFirstName('');
                         setEmail('');
                         setShowAdditionalFields(false); 
                         toast({title: "Form Cleared", description: "You can enter new details for another estimate."}) 
                     }}
                     className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm"
+                    disabled={isLoading}
                   >
                     Start New Estimate
                   </Button>

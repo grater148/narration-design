@@ -23,6 +23,7 @@ const AGILED_API_KEY = process.env.AGILED_API_KEY;
 
 // Updated function signature to include firstName
 export async function saveLead(leadData: { firstName: string; email: string; wordCount: number; genre: string }): Promise<SaveLeadResult> {
+  console.log("SERVER: saveLead action invoked"); // <<< ADDED THIS LINE
   if (initializationError) {
     console.error("Firebase not initialized, cannot save lead:", initializationError);
     return { success: false, message: initializationError };
@@ -124,7 +125,7 @@ export async function saveLead(leadData: { firstName: string; email: string; wor
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${AGILED_API_KEY}`,
-          'X-Agiled-Brand-URL': agiledBrandHostname, // Still verify if this header is needed/correct
+          'Brand': agiledBrandHostname, // Changed header name here
         },
         body: JSON.stringify(payload),
       });
