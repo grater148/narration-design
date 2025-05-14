@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Users, Speaker } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { saveLead } from '@/app/actions/saveEmail'; // Updated import name
+import { saveLead } from '@/app/actions/saveEmail';
 
 
 const WORDS_PER_HOUR = 9000;
@@ -51,6 +51,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   const [wordCount, setWordCount] = useState('');
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [genre, setGenre] = useState('');
+  const [firstName, setFirstName] = useState(''); // Added: State for First Name
   const [email, setEmail] = useState('');
 
   const [estimatedHours, setEstimatedHours] = useState<number | null>(null);
@@ -83,20 +84,24 @@ export const NarrationCostCalculatorSection: NextPage = () => {
       setShowAdditionalFields(true);
     } else {
       setShowAdditionalFields(false);
-      setGenre(''); // Reset genre if word count or service changes such that additional fields are hidden
-      setEmail(''); // Reset email as well
-      setShowCostDisplay(false); // Ensure cost display is also reset
+      setGenre('');
+      setFirstName(''); // Added: Reset firstName
+      setEmail('');
+      setShowCostDisplay(false);
     }
   }, [wordCount, selectedService]);
 
   const handleGetEstimate = async () => {
     const wc = parseInt(wordCount);
     const isEmailValid = email && email.includes('@') && email.split('@')[1]?.includes('.');
+    const isFirstNameValid = firstName.trim() !== ''; // Added: Validate firstName
 
-    if (wc > 0 && genre && isEmailValid && selectedService) {
-      setShowCostDisplay(true); // Show cost display area
+    // Added: firstName validation
+    if (wc > 0 && genre && isFirstNameValid && isEmailValid && selectedService) {
+      setShowCostDisplay(true);
       try {
-        const result = await saveLead({ email, wordCount: wc, genre });
+        // Added: Pass firstName to saveLead
+        const result = await saveLead({ firstName: firstName.trim(), email, wordCount: wc, genre });
         if (result.success) {
           toast({
             title: "Estimate Saved",
@@ -119,11 +124,12 @@ export const NarrationCostCalculatorSection: NextPage = () => {
         });
       }
     } else {
-      setShowCostDisplay(false); // Ensure cost is hidden if conditions aren't met for estimate
+      setShowCostDisplay(false);
       let errorMessages: string[] = [];
       if (!(wc > 0)) errorMessages.push("- Valid word count is required.");
       if (!selectedService) errorMessages.push("- Service level must be selected.");
       if (!genre) errorMessages.push("- Genre must be selected.");
+      if (!isFirstNameValid) errorMessages.push("- First name is required."); // Added: Error message for firstName
       if (!isEmailValid) errorMessages.push("- A valid email is required.");
       
       toast({
@@ -229,9 +235,29 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   </Select>
                 </div>
 
+                {/* Added: First Name Input Field */}
                 <div>
+                  <Label htmlFor="firstName" className="text-lg font-medium text-primary mb-2 block">
+                    4. Your First Name:
+                  </Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="e.g., Alex"
+                    className="text-base"
+                    required // Added: HTML5 required attribute
+                  />
+                   <p className="mt-1 text-xs text-muted-foreground">
+                    Your first name is required.
+                  </p>
+                </div>
+
+                <div>
+                  {/* Adjusted numbering due to new field */}
                   <Label htmlFor="email" className="text-lg font-medium text-primary mb-2 block">
-                    4. Your Email Address:
+                    5. Your Email Address:
                   </Label>
                   <Input
                     id="email"
@@ -248,12 +274,12 @@ export const NarrationCostCalculatorSection: NextPage = () => {
               </div>
             )}
 
-            {/* Button to trigger estimate calculation and saving */} 
             {showAdditionalFields && !showCostDisplay && (
                  <Button 
                     onClick={handleGetEstimate} 
                     className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold"
-                    disabled={!wordCount || !selectedService || !genre || !email}
+                    // Added: firstName to disabled condition
+                    disabled={!wordCount || !selectedService || !genre || !firstName || !email}
                   >
                    Calculate & Save Estimate
                  </Button>
@@ -273,13 +299,13 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                   <p className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
                     This is a preliminary estimate. Actual costs may vary. We have saved your estimate details.
                   </p>
-                  {/* Optional: Button to request a detailed quote can remain or be modified */}
                   <Button 
-                    onClick={() => { /* Logic for detailed quote or clear form */ 
+                    onClick={() => { 
                         setShowCostDisplay(false); 
                         setWordCount('');
                         setSelectedService(null);
                         setGenre('');
+                        setFirstName(''); // Added: Reset firstName
                         setEmail('');
                         setShowAdditionalFields(false); 
                         toast({title: "Form Cleared", description: "You can enter new details for another estimate."}) 
