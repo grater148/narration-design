@@ -11,8 +11,8 @@ export function HeroSection() {
         data-ai-hint="audio studio"
       >
         <Image
-          src="https://picsum.photos/1600/900?grayscale&blur=2" // Placeholder image
-          alt="Abstract background representing audio waves or studio"
+          src="/images/hero-image.png" // Changed to new hero image
+          alt="Hero background image" // Updated alt text
           layout="fill"
           objectFit="cover"
           className="opacity-20"
