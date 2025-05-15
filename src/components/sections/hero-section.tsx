@@ -24,7 +24,7 @@ export function HeroSection() {
           <h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl">
             Craft Your Audiobook, <span className="text-accent">Your Way</span>
           </h1>
-          <p className="mt-6 text-lg text-foreground/90 sm:text-xl">
+          <p className="mt-6 text-xl text-foreground sm:text-2xl">
             Narration.Design offers bespoke audiobook production services, blending the artistry of human narration with the efficiency of AI.
           </p>
           <div className="mt-10">
