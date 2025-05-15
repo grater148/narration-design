@@ -2,14 +2,9 @@
 'use server';
 
 import { db, initializationError } from '@/lib/firebase';
+import nodemailer from 'nodemailer';
 import { collection, addDoc, serverTimestamp, Timestamp, FirestoreError } from 'firebase/firestore';
 import { z } from 'zod';
-
-// --- TODO: Configure your Email Sending Service --- 
-// Example: If using Resend
-// import { Resend } from 'resend';
-// const resend = new Resend(process.env.RESEND_API_KEY);
-// Or for other services, import their respective SDKs.
 
 const ContactMessageSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }).max(100, { message: "Name must be 100 characters or less" }),
@@ -20,8 +15,12 @@ const ContactMessageSchema = z.object({
 export interface SaveContactMessageResult {
   success: boolean;
   message: string;
-  emailSent?: boolean; // Optional: to indicate if email was attempted/successful
 }
+
+// Email Configuration (ensure these are in your .env.local and deployment environment)
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const RECEIVING_EMAIL = 'success@narration.design';
 
 export async function saveContactMessage(formData: { name: string; email: string; message: string }): Promise<SaveContactMessageResult> {
   if (initializationError) {
@@ -34,99 +33,86 @@ export async function saveContactMessage(formData: { name: string; email: string
     console.error(dbUnavailableMsg);
     return { success: false, message: "Server error: Database service unavailable." };
   }
+  const firestoreDb = db; // Ensure db is treated as defined
 
-  try {
-    const validatedData = ContactMessageSchema.safeParse(formData);
-    if (!validatedData.success) {
-      const fieldErrors = validatedData.error.flatten().fieldErrors;
-      const errorMessages = Object.entries(fieldErrors)
-        .map(([field, messages]) => `${field}: ${messages?.join(', ')}`)
-        .join('; ');
-      console.warn("Invalid contact message data received by server action:", formData, fieldErrors);
-      return { success: false, message: `Invalid data. ${errorMessages || 'Please check your input.'}` };
-    }
+  const validatedData = ContactMessageSchema.safeParse(formData);
+  if (!validatedData.success) {
+    const fieldErrors = validatedData.error.flatten().fieldErrors;
+    const errorMessages = Object.entries(fieldErrors)
+      .map(([field, messages]) => `${field}: ${messages?.join(', ')}`)
+      .join('; ');
+    console.warn("Invalid contact message data received by server action:", formData, fieldErrors);
+    return { success: false, message: `Invalid data. ${errorMessages || 'Please check your input.'}` };
+  }
 
-    const { name, email, message } = validatedData.data;
+  const { name, email, message } = validatedData.data;
 
-    // 1. Save to Firestore (as before)
-    const contactSubmissionsRef = collection(db, 'contactFormSubmissions');
-    await addDoc(contactSubmissionsRef, {
+  // Helper function to save to Firestore
+  const saveToFirestore = async () => {
+    const contactSubmissionsRef = collection(firestoreDb, 'contactFormSubmissions');
+    const firestoreDoc = await addDoc(contactSubmissionsRef, {
       name,
       email,
       message,
       createdAt: serverTimestamp() as Timestamp,
       source: 'ContactForm',
     });
+    console.log("Contact message saved to Firestore with ID:", firestoreDoc.id);
+  };
 
-    // 2. Send Email Notification
-    const emailRecipient = 'success@narration.design';
-    const emailSubject = `New Contact Form Submission from ${name}`;
-    const emailBody = `
-      You have a new contact form submission:
-      ------------------------------------------
-      Name: ${name}
-      Email: ${email}
-      Message:
-      ${message}
-      ------------------------------------------
-    `;
+  // Helper function to send email
+  const sendEmail = async () => {
+    if (!EMAIL_USER || !EMAIL_PASS) {
+      console.warn("Email user or password not configured. Cannot send contact message email.");
+      return false; // Indicate failure
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail', // Or your preferred email service
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASS,
+      },
+    });
 
     try {
-      // --- TODO: Implement your email sending logic here ---
-      // This is a placeholder. Replace with your email service provider's code.
-      // Example using a hypothetical sendEmail function:
-      //
-      // await sendEmail({
-      //   to: emailRecipient,
-      //   from: 'noreply@yourdomain.com', // Your "from" address, configure with your email provider
-      //   subject: emailSubject,
-      //   text: emailBody, // Or html: emailBodyHTML if you have an HTML version
-      // });
-      //
-      // Example if using Resend (ensure RESEND_API_KEY is in your .env):
-      // const { data, error } = await resend.emails.send({
-      //   from: 'Narration Design Contact Form <noreply@yourverifieddomain.com>', // Replace with your verified Resend domain
-      //   to: [emailRecipient],
-      //   subject: emailSubject,
-      //   text: emailBody, // or use `react: EmailTemplate({ name, email, message })` for HTML emails
-      // });
-      // if (error) {
-      //   throw new Error(`Resend error: ${error.message}`);
-      // }
-
-      console.log(`Email notification supposedly sent to ${emailRecipient}`); // Replace with actual success logging
-      // --- End of TODO for email sending logic ---
-
-      return { success: true, message: "Your message has been sent successfully!", emailSent: true };
-
+      await transporter.sendMail({
+        from: `"Contact Form" <${EMAIL_USER}>`,
+        to: RECEIVING_EMAIL,
+        subject: `New Contact Form Submission from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\nMessage:\n${message}`,
+      });
+      console.log("Contact message email sent successfully to", RECEIVING_EMAIL);
+      return true; // Indicate success
     } catch (emailError) {
-      console.error("Failed to send email notification:", emailError);
-      // Still return success: true for the form submission part, as the message was saved to Firestore.
-      // But include a message indicating email sending failed.
-      return {
-        success: true, 
-        message: "Your message was saved, but we encountered an issue sending the email notification to our team. We will follow up as soon as possible.", 
-        emailSent: false 
-      };
+      console.error("Failed to send contact message email:", emailError);
+      return false; // Indicate failure
+    }
+  };
+
+  try {
+    // 1. Save to Firestore
+    await saveToFirestore();
+    
+    // 2. Send Email
+    const emailSent = await sendEmail();
+
+    if (emailSent) {
+        return { success: true, message: "Your message has been sent successfully!" };
+    } else {
+        // Firestore save was successful, but email failed
+        return { success: true, message: "Your message was saved to our system, but there was an issue sending the confirmation email. We will address this manually." };
     }
 
   } catch (error) {
-    console.error("Error saving contact message to Firestore:", error);
+    console.error("Error in saveContactMessage function (outer try-catch):", error);
     let userMessage = "An error occurred while sending your message. Please try again later.";
     if (error instanceof FirestoreError) {
-      userMessage = `Failed to send message due to a database issue (Code: ${error.code}). Please try again. If the problem persists, contact support.`;
-    }
+        userMessage = `Failed to save your message due to a database issue (Code: ${error.code}). Please try again. If the problem persists, contact support.`;
+    } 
+    // Note: Email errors are caught within sendEmail and result in emailSent being false.
+    // The main catch block here would primarily catch Firestore errors from saveToFirestore
+    // or other unexpected errors.
     return { success: false, message: userMessage };
   }
 }
-
-// --- TODO: Define your sendEmail function or use an SDK ---
-// async function sendEmail(options: { to: string; from: string; subject: string; text: string; html?: string }) {
-//   // This is where you'd use nodemailer, Resend, SendGrid, AWS SES SDK, etc.
-//   // For example, with Nodemailer:
-//   // const transporter = nodemailer.createTransport({ /* ...your transport config... */ });
-//   // await transporter.sendMail(options);
-//   console.log("Email sending logic for:", options);
-//   return Promise.resolve();
-// }
-
