@@ -21,6 +21,7 @@ export function ContactSection() {
   const handleSubmit = async () => {
     setIsLoading(true);
     const result: SaveContactMessageResult = await saveContactMessage({ name, email, message });
+    console.log(result);
     setIsLoading(false);
 
     if (result.success) {

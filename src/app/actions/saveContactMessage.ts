@@ -21,6 +21,7 @@ export interface SaveContactMessageResult {
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const RECEIVING_EMAIL = 'success@narration.design';
+const AGILED_API_KEY = process.env.AGILED_API_KEY;
 
 export async function saveContactMessage(formData: { name: string; email: string; message: string }): Promise<SaveContactMessageResult> {
   if (initializationError) {
@@ -90,20 +91,47 @@ export async function saveContactMessage(formData: { name: string; email: string
     }
   };
 
-  try {
-    // 1. Save to Firestore
-    await saveToFirestore();
-    
-    // 2. Send Email
-    const emailSent = await sendEmail();
-
-    if (emailSent) {
-        return { success: true, message: "Your message has been sent successfully!" };
-    } else {
-        // Firestore save was successful, but email failed
-        return { success: true, message: "Your message was saved to our system, but there was an issue sending the confirmation email. We will address this manually." };
+  // Helper function to send data to Agiled CRM
+  const sendToAgiledCRM = async (data: { name: string; email: string; message: string }) => {
+    if (!AGILED_API_KEY) {
+      console.warn("Agiled API key not configured. Cannot send contact message to CRM.");
+      return false; // Indicate failure
     }
 
+    const CRM_URL = 'https://my.agiled.app/v1/'; // Agiled CRM API endpoint
+
+    try {
+      const response = await fetch(CRM_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AGILED_API_KEY}`, // Assuming Bearer token authentication
+        },
+        body: JSON.stringify({
+          // Map your form data to the expected Agiled CRM payload structure
+          // This is a placeholder and needs to match the actual API documentation
+          name: data.name,
+          email: data.email,
+          message: data.message,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error(`Failed to send contact message to Agiled CRM. Status: ${response.status}, Response: ${errorBody}`);
+        return false; // Indicate failure
+      }
+
+      console.log("Contact message sent to Agiled CRM successfully.");
+      return true; // Indicate success
+    } catch (crmError) {
+      console.error("Error sending contact message to Agiled CRM:", crmError);
+      return false; // Indicate failure
+    }
+  };
+
+  try {
+    await saveToFirestore(); // Save to Firestore first
   } catch (error) {
     console.error("Error in saveContactMessage function (outer try-catch):", error);
     let userMessage = "An error occurred while sending your message. Please try again later.";
@@ -111,8 +139,22 @@ export async function saveContactMessage(formData: { name: string; email: string
         userMessage = `Failed to save your message due to a database issue (Code: ${error.code}). Please try again. If the problem persists, contact support.`;
     } 
     // Note: Email errors are caught within sendEmail and result in emailSent being false.
-    // The main catch block here would primarily catch Firestore errors from saveToFirestore
+    // The main catch block here primarily catches Firestore errors from saveToFirestore
     // or other unexpected errors.
     return { success: false, message: userMessage };
+  }
+
+  // After successful Firestore save, send email and to CRM (these can happen in parallel or sequence)
+  const emailSent = await sendEmail();
+  const crmSent = await sendToAgiledCRM({ name, email, message });
+
+  if (emailSent && crmSent) {
+    return { success: true, message: "Your message has been sent successfully!" };
+  } else if (!emailSent && crmSent) {
+    return { success: true, message: "Your message was sent successfully, but there was an issue sending the confirmation email." };
+  } else if (emailSent && !crmSent) {
+    return { success: true, message: "Your message was sent successfully, but there was an issue submitting it to our CRM." };
+  } else {
+    return { success: true, message: "Your message was saved to our system, but there were issues sending the email and submitting to the CRM. We will address this manually." };
   }
 }
