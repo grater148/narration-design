@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({ // Corrected instantiation
 export const metadata: Metadata = {
   title: 'Narration.Design - Audiobook Creation Services',
   description: 'Hybrid audiobook creation with human and AI narrators.',
+  // icons block removed
 };
 
 export default function RootLayout({
