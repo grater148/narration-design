@@ -10,21 +10,21 @@ const services = [
     icon: <User className="h-10 w-10 text-primary mb-4" />,
     title: 'Narration Only',
     description: 'A single, captivating voice narrates your entire book, perfect for straightforward storytelling and non-fiction.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', // Placeholder audio
+    audioSrc: '/audio/Narration-Only-Sample.mp3', 
     aiHint: 'audiobook recording'
   },
   {
     icon: <Users className="h-10 w-10 text-primary mb-4" />,
     title: 'Full Cast',
     description: 'Bring your characters to life with unique voices for each role, creating a dynamic and engaging listening experience.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3', // Placeholder audio
+    audioSrc: '/audio/Full-Cast-Sample.mp3', 
     aiHint: 'voice actors'
   },
   {
     icon: <Speaker className="h-10 w-10 text-primary mb-4" />,
     title: 'Immersive Audio',
     description: 'Go beyond narration with a full cast and rich sound effects, enveloping your listener in the world of your story.',
-    audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3', // Placeholder audio
+    audioSrc: '/audio/Immersive-Audio-Sample.mp3', 
     aiHint: 'sound design'
   },
 ];
