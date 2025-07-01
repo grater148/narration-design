@@ -129,5 +129,3 @@ export function ContactSection() {
     </section>
   );
 }
-
-// Removed the Agiled embed script and related useEffect/global type definitions

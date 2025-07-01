@@ -16,6 +16,7 @@ import { saveLead } from '@/app/actions/saveEmail';
 
 
 const WORDS_PER_HOUR = 9000;
+const MINIMUM_COST = 400;
 
 const SERVICE_DETAILS = {
   narrationOnly: { id: 'narrationOnly', label: 'Narration Only', price: 75, icon: User },
@@ -58,6 +59,8 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 
   const [estimatedHours, setEstimatedHours] = useState<number | null>(null);
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
+  const [isMinimumCostApplied, setIsMinimumCostApplied] = useState(false);
+
 
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const [showCostDisplay, setShowCostDisplay] = useState(false);
@@ -75,9 +78,17 @@ export const NarrationCostCalculatorSection: NextPage = () => {
   useEffect(() => {
     if (estimatedHours !== null && selectedService && SERVICE_DETAILS[selectedService as keyof typeof SERVICE_DETAILS]) {
       const servicePrice = SERVICE_DETAILS[selectedService as keyof typeof SERVICE_DETAILS].price;
-      setEstimatedCost(estimatedHours * servicePrice);
+      const calculatedCost = estimatedHours * servicePrice;
+      if (calculatedCost < MINIMUM_COST) {
+        setEstimatedCost(MINIMUM_COST);
+        setIsMinimumCostApplied(true);
+      } else {
+        setEstimatedCost(calculatedCost);
+        setIsMinimumCostApplied(false);
+      }
     } else {
       setEstimatedCost(null);
+      setIsMinimumCostApplied(false);
     }
   }, [estimatedHours, selectedService]);
 
@@ -317,9 +328,15 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                 <CardContent className="p-0 text-center">
                   <p className="text-3xl sm:text-4xl font-bold text-primary">
                     ${estimatedCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {isMinimumCostApplied && '*'}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground max-w-md mx-auto">
                     This is a preliminary estimate. Actual costs may vary. We have saved your estimate details.
+                    {isMinimumCostApplied && (
+                        <span className="block mt-1">
+                            *A minimum fee of $400 applies to all book narration projects.
+                        </span>
+                    )}
                   </p>
                   <div className="mt-4 flex flex-col sm:flex-row justify-center items-center gap-3">
                     <Button
@@ -331,6 +348,7 @@ export const NarrationCostCalculatorSection: NextPage = () => {
                           setFirstName('');
                           setEmail('');
                           setShowAdditionalFields(false);
+                          setIsMinimumCostApplied(false);
                           toast({title: "Form Cleared", description: "You can enter new details for another estimate."})
                       }}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 text-sm w-full sm:w-auto"
@@ -357,4 +375,3 @@ export const NarrationCostCalculatorSection: NextPage = () => {
 };
 
 export default NarrationCostCalculatorSection;
-
